@@ -1,11 +1,12 @@
 #include "uls.h"
 
-t_file *mx_create_file(char *path)
+t_file *mx_create_file(char *path, char *full_path)
 {
-    t_file *file = mx_memalloc(sizeof(t_file));
+    t_file *file = (t_file *)mx_memalloc(sizeof(t_file));
 	t_stat stat;
 
-	lstat(path, &stat);
+	lstat(full_path, &stat);
+	mx_memcpy((void*)file->full_path, (void*)full_path, PATH_MAX);
 	file->name = mx_strdup(path);
 	file->st_mode = stat.st_mode;
 	file->st_nlink = stat.st_nlink;

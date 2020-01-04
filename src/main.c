@@ -1,15 +1,5 @@
 #include "uls.h"
 
-static void output(t_file *list) {
-    while (list) {
-        printf("%s\n", list->name);
-        if (S_ISDIR(list->st_mode) && list->subdirectories && strcmp(list->name, "..") != 0 &&
-            strcmp(list->name, ".") != 0)
-            output(list->subdirectories);
-        list = list->next;
-    }
-}
-
 int main(int argc, char *argv[]) {
     // parse flags
     /*...*/
@@ -26,11 +16,12 @@ int main(int argc, char *argv[]) {
     argv += flags_count;
     argc -= flags_count;
     for (int i = 0; i < argc; i++)
-        mx_get_file_list(argv[i], flags, &list);
+        mx_get_data_set(argv[i], flags, &list);
     /*...*/
 
     // display all
-    output(list);
+    mx_output(list, flags);
 
+    // system("leaks -q uls");
     return 0;
 }
