@@ -20,7 +20,8 @@ SRC	= 	main.c\
 		get_file_list.c\
 		sorting.c\
 		sorting_flags.c\
-		output.c\
+		print_chmod.c\
+		lltoa.c\
 		
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
 OBJS	=	$(addprefix $(OBJD)/, $(SRC:%.c=%.o))

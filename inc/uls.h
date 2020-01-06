@@ -7,6 +7,11 @@
 #include <sys/stat.h>
 #include <sys/acl.h>
 #include <sys/xattr.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <grp.h>
+#include <uuid/uuid.h>
+#include <time.h>
 
 
 #define PATH_MAX 1024
@@ -100,5 +105,8 @@ bool mx_sort_by_name(t_file *f1, t_file *f2, int reverse);
 // output.c
 void mx_output(t_file *list, int flags);
 void mx_print_chmod(char chmod[12], t_file *file);
+
+//lltoa.c
+char *mx_lltoa(long long int number);
 
 #endif
