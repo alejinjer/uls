@@ -13,9 +13,6 @@
 #include <uuid/uuid.h>
 #include <time.h>
 
-
-#define PATH_MAX 1024
-
 typedef enum e_error {
     ERRNO,
     USAGE,
@@ -62,6 +59,7 @@ typedef struct s_sort_stack_item t_sort_item;
 struct s_file {
     char *name;
     char full_path[PATH_MAX];
+    char symlink[NAME_MAX];
     mode_t st_mode;          /* File type and mode */
     nlink_t st_nlink;        /* Number of hard links */
     uid_t st_uid;            /* User ID of owner */
@@ -101,6 +99,8 @@ void mx_lst_sort(t_file **list,
 
 // sorting_flags.c
 bool mx_sort_by_name(t_file *f1, t_file *f2, int reverse);
+bool mx_sort_by_size(t_file *f1, t_file *f2, int reverse);
+bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse);
 
 // output.c
 void mx_output(t_file *list, int flags);

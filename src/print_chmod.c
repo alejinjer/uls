@@ -30,26 +30,56 @@ void mx_print_time(t_file *file) {
 	mx_printstr(s1);
 }
 
+void mx_print_total_nblocks(t_file *list) {
+    int total = 0;
+    t_file *ptr = list;
+    t_file *recur_ptr = NULL;
+
+    while (ptr) {
+        total += ptr->st_blocks;
+        if (ptr->subdirectories) {
+            recur_ptr = ptr->subdirectories;
+            while (recur_ptr) {
+                total += recur_ptr->st_blocks;
+                recur_ptr = recur_ptr->next;
+            }
+        }
+        ptr = ptr->next;
+    }
+    mx_printstr("total ");
+    mx_printstr(mx_itoa(total));
+}
+
+
 // тестовый вывод, нужно написать нормальный
 void mx_output(t_file *list, int flags) { 
     char chmod[12];
 
+    if (flags & LS_L) {
+        mx_print_total_nblocks(list);
+        mx_printstr("\n");
+    }
+
     while (list) {
         if (flags & LS_L) {
             mx_print_chmod(chmod, list);
-            // mx_printstr("   ");
-            // mx_print_nlinks(list);
-            // mx_printstr("   ");
-            // mx_print_uid(list);
-            // mx_printstr("   ");
-            // mx_print_gid(list);
-            // mx_printstr("   ");
-            // mx_print_size(list);
-            // mx_printstr("   ");
-            // mx_print_time(list);
-            // mx_printstr("   ");
+            mx_printstr("   ");
+            mx_print_nlinks(list);
+            mx_printstr("   ");
+            mx_print_uid(list);
+            mx_printstr("   ");
+            mx_print_gid(list);
+            mx_printstr("   ");
+            mx_print_size(list);
+            mx_printstr("   ");
+            mx_print_time(list);
+            mx_printstr("   ");
         }
         mx_printstr(list->name);
+        if (S_ISLNK(list->st_mode)) {
+            mx_printstr(" -> ");
+            mx_printstr(list->symlink);
+        }
         mx_printstr("\n");
         if (S_ISDIR(list->st_mode) && list->subdirectories && (flags & LS_RR) 
             && strcmp(list->name, "..") != 0
