@@ -2,7 +2,6 @@
 
 void mx_print_nlinks(t_file *file) {
     mx_printint(file->st_nlink);
-    mx_printchar(' ');
 }
 
 void mx_print_uid(t_file *file) {
@@ -20,37 +19,65 @@ void mx_print_size(t_file *file) {
 }
 
 void mx_print_time(t_file *file) {
-    // time_t	today;
 	char	*s = NULL;
     char	*s1 = mx_strnew(12);
 
-	// time(&today);
     s = ctime(&(file->st_mtim.tv_sec)) + 4;
     s1 = mx_strncpy(s1, s, 12);
+
 	mx_printstr(s1);
+}
+void mx_print_major(t_file *file) {
+    mx_printint(major(file->st_rdev));
+}
+
+void mx_print_minor(t_file *file) {
+    mx_printint(minor(file->st_rdev));
 }
 
 // тестовый вывод, нужно написать нормальный
 void mx_output(t_file *list, int flags) { 
     char chmod[12];
+    int blocks = 0;
+    int *size = mx_get_row_size(list, &blocks);
+    int max_size = mx_list_max(list);
 
     while (list) {
         if (flags & LS_L) {
             mx_print_chmod(chmod, list);
-            // mx_printstr("   ");
-            // mx_print_nlinks(list);
-            // mx_printstr("   ");
-            // mx_print_uid(list);
-            // mx_printstr("   ");
-            // mx_print_gid(list);
-            // mx_printstr("   ");
-            // mx_print_size(list);
-            // mx_printstr("   ");
-            // mx_print_time(list);
-            // mx_printstr("   ");
+            mx_printnchar(' ', size[1] - mx_intlength(list->st_nlink) + 1);
+            mx_print_nlinks(list);
+            mx_printnchar(' ', 
+            size[2] - mx_strlen(getpwuid(list->st_uid)->pw_name) + 1);
+            mx_print_uid(list);
+            mx_printnchar(' ', size[3] - mx_intlength(list->st_gid) + 2);
+            mx_print_gid(list);
+            if (chmod[0] != 'c' && chmod[0] != 'b') {
+                mx_printnchar(' ', size[7] - mx_intlength(list->st_size) + 2);
+                mx_print_size(list);
+            }
+            else {
+                mx_print_major(list);
+                mx_printstr(", ");
+                mx_printnchar(' ', 
+                size[6] - mx_intlength(minor(list->st_rdev) - 1));
+                mx_print_minor(list);
+            }
+            mx_printchar(' ');
+            mx_print_time(list);
+            mx_printchar(' ');
+            mx_printstr(list->name);
+            mx_printstr("\n");
         }
-        mx_printstr(list->name);
-        mx_printstr("\n");
+        else if (flags & LS_ONE) {
+            mx_printstr(list->name); 
+            mx_printstr("\n");
+        }
+        else {
+            mx_printstr(list->name);
+            mx_printnchar(' ', max_size - mx_strlen(list->name));
+            mx_printchar('\t');
+        }
         if (S_ISDIR(list->st_mode) && list->subdirectories && (flags & LS_RR) 
             && strcmp(list->name, "..") != 0
             && strcmp(list->name, ".") != 0)

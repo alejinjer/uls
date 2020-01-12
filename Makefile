@@ -22,6 +22,7 @@ SRC	= 	main.c\
 		sorting_flags.c\
 		print_chmod.c\
 		lltoa.c\
+		spacing_l.c\
 		
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
 OBJS	=	$(addprefix $(OBJD)/, $(SRC:%.c=%.o))

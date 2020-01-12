@@ -7,7 +7,7 @@ void mx_get_data_set(char *dirname, int flags, t_file **list) {
     char *full_path = NULL;
 
     if (!d)
-        return;
+        mx_ls_error(dirname, 0);
     while ((entry = readdir(d))) {
         full_path = mx_strdup(dirname);
         full_path = mx_strcat(full_path, "/");

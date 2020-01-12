@@ -15,10 +15,12 @@ int main(int argc, char *argv[]) {
     /*...*/
     argv += flags_count;
     argc -= flags_count;
-    for (int i = 0; i < argc; i++)
-        mx_get_data_set(argv[i], flags, &list);
+    if (argc == 0)
+        mx_get_data_set(".", flags, &list);
+    else
+        for (int i = 0; i < argc; i++)
+            mx_get_data_set(argv[i], flags, &list);
     /*...*/
-
     // display all
     mx_output(list, flags);
 

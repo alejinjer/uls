@@ -12,8 +12,9 @@
 #include <grp.h>
 #include <uuid/uuid.h>
 #include <time.h>
+#include <sys/ioctl.h>
 
-
+#define MAX(a, b) b & ((a - b) >> 31) | a & (~(a - b) >> 31)
 #define PATH_MAX 1024
 
 typedef enum e_error {
@@ -86,6 +87,9 @@ int mx_parse_flags(int argc, char **argv, int *flags);
 
 // utils.c
 void mx_ls_error(char *s, int error);
+int mx_intlength(int n);
+void mx_printnchar(char c, int n);
+int mx_list_max(t_file *list);
 
 // files.c
 // t_file *mx_create_file(char *path);
@@ -108,5 +112,6 @@ void mx_print_chmod(char chmod[12], t_file *file);
 
 //lltoa.c
 char *mx_lltoa(long long int number);
-
+//spacing_l.c
+int *mx_get_row_size(t_file *file, int *blocks);
 #endif
