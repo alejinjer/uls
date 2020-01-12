@@ -9,6 +9,7 @@ int *mx_get_row_size(t_file *file, int *blocks) {
     size[5] = 3;
     size[6] = 3;
     while (file) {
+        gr = getgrgid(file->st_gid);
         size[0] = MAX(mx_intlength(file->st_blocks), size[0]);
         size[1] = MAX(mx_intlength(file->st_nlink), size[1]);
         size[2] = MAX(mx_strlen(getpwuid(file->st_uid)->pw_name), size[2]);
@@ -27,7 +28,7 @@ int *mx_get_row_size(t_file *file, int *blocks) {
         *blocks += file->st_blocks;
         file = file->next;
     }
-    size[5] = MAX(size[4] - size[6] - 1, size[5]);
+    //size[5] = MAX(size[4] - size[6] - 1, size[5]);
 
     return size;
 }

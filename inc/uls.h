@@ -59,6 +59,7 @@ typedef struct stat t_stat;
 typedef struct dirent t_dirent;
 typedef struct s_file t_file;
 typedef struct s_sort_stack_item t_sort_item;
+typedef struct s_index t_index;
 
 struct s_file {
     char *name;
@@ -80,6 +81,11 @@ struct s_file {
 struct s_sort_stack_item {
     int level;
     t_file *item;
+};
+
+struct s_index {
+    int x;
+    int y;
 };
 
 // parse_flags.c

@@ -30,7 +30,7 @@ void mx_printnchar(char c, int n) {
 int mx_intlength(int n) {
     int length = 0;
 
-    while (n) {
+    while (n / 10) {
         length++;
         n /= 10;
     }
@@ -46,3 +46,4 @@ int mx_list_max(t_file *list) {
     }
     return max;
 }
+

@@ -47,11 +47,14 @@ void mx_output(t_file *list, int flags) {
             mx_print_chmod(chmod, list);
             mx_printnchar(' ', size[1] - mx_intlength(list->st_nlink) + 1);
             mx_print_nlinks(list);
-            mx_printnchar(' ', 
-            size[2] - mx_strlen(getpwuid(list->st_uid)->pw_name) + 1);
+            mx_printnchar(' ', size[2] - mx_strlen(getpwuid(list->st_uid)->pw_name) + 1);
             mx_print_uid(list);
-            mx_printnchar(' ', size[3] - mx_intlength(list->st_gid) + 2);
+            mx_printnchar(' ', 2);
             mx_print_gid(list);
+            if (list->st_gid)
+                mx_printnchar(' ', size[3] - mx_intlength(list->st_gid));
+            else
+                mx_printnchar(' ', size[3] - mx_strlen(getgrgid(list->st_gid)->gr_name));
             if (chmod[0] != 'c' && chmod[0] != 'b') {
                 mx_printnchar(' ', size[7] - mx_intlength(list->st_size) + 2);
                 mx_print_size(list);
@@ -59,24 +62,27 @@ void mx_output(t_file *list, int flags) {
             else {
                 mx_print_major(list);
                 mx_printstr(", ");
-                mx_printnchar(' ', 
-                size[6] - mx_intlength(minor(list->st_rdev) - 1));
+                mx_printnchar(' ', size[6] - mx_intlength(minor(list->st_rdev) - 1));
                 mx_print_minor(list);
             }
             mx_printchar(' ');
             mx_print_time(list);
             mx_printchar(' ');
             mx_printstr(list->name);
-            mx_printstr("\n");
+            mx_printchar('\n');
         }
         else if (flags & LS_ONE) {
             mx_printstr(list->name); 
-            mx_printstr("\n");
+            mx_printchar('\n');
         }
         else {
             mx_printstr(list->name);
-            mx_printnchar(' ', max_size - mx_strlen(list->name));
-            mx_printchar('\t');
+            if (list->next) {
+                mx_printnchar(' ', max_size - mx_strlen(list->name));
+                mx_printchar('\t');
+            } else {
+                mx_printchar('\n');
+            }
         }
         if (S_ISDIR(list->st_mode) && list->subdirectories && (flags & LS_RR) 
             && strcmp(list->name, "..") != 0
