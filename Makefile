@@ -18,9 +18,15 @@ SRC	= 	main.c\
 		utils.c\
 		files.c\
 		get_file_list.c\
-		sorting.c\
+		sorting_algo.c\
 		sorting_flags.c\
+		print_total_nblocks.c\
 		print_chmod.c\
+		print_uid.c\
+		print_gid.c\
+		print_size.c\
+		print_time.c\
+		print_link.c\
 		lltoa.c\
 		
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))

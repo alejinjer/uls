@@ -44,15 +44,35 @@ typedef enum e_error {
 #define LS_U 256
 #define LS_ONE 512
 
-/*
-	file mode, number of links, owner name, group name, 
-	number of bytes in the file, abbreviated month, 
-	day-of-month file was last modified, hour file last modified, 
-	minute file last modified, and the pathname.
-*/
+#define MX_ISBLK(m)      (((m) & S_IFMT) == S_IFBLK)     /* block special */
+#define MX_ISCHR(m)      (((m) & S_IFMT) == S_IFCHR)     /* char special */
+#define MX_ISDIR(m)      (((m) & S_IFMT) == S_IFDIR)     /* directory */
+#define MX_ISFIFO(m)     (((m) & S_IFMT) == S_IFIFO)     /* fifo or socket */
+#define MX_ISREG(m)      (((m) & S_IFMT) == S_IFREG)     /* regular file */
+#define MX_ISLNK(m)      (((m) & S_IFMT) == S_IFLNK)     /* symbolic link */
+#define MX_ISSOCK(m)     (((m) & S_IFMT) == S_IFSOCK)    /* socket */
+
+/* Read, write, execute/search by user */
+#define MX_IRUSR         0000400         /* [XSI] R for owner */
+#define MX_IWUSR         0000200         /* [XSI] W for owner */
+#define MX_IXUSR         0000100         /* [XSI] X for owner */
+/* Read, write, execute/search by group */
+#define MX_IRGRP         0000040         /* [XSI] R for group */
+#define MX_IWGRP         0000020         /* [XSI] W for group */
+#define MX_IXGRP         0000010         /* [XSI] X for group */
+/* Read, write, execute/search by others */
+#define MX_IROTH         0000004         /* [XSI] R for other */
+#define MX_IWOTH         0000002         /* [XSI] W for other */
+#define MX_IXOTH         0000001         /* [XSI] X for other */
+
+#define MX_ISUID         0004000         /* [XSI] set user id on execution */
+#define MX_ISGID         0002000         /* [XSI] set group id on execution */
+#define MX_ISVTX         0001000         /* [XSI] directory restrcted delete */
 
 typedef struct stat t_stat;
 typedef struct dirent t_dirent;
+typedef struct passwd t_passwd;
+typedef struct group t_group;
 typedef struct s_file t_file;
 typedef struct s_sort_stack_item t_sort_item;
 
@@ -67,11 +87,9 @@ struct s_file {
     dev_t st_rdev;           /* Device ID (if special file) */
     off_t st_size;           /* Total size, in bytes */
     blkcnt_t st_blocks;      /* Number of 512B blocks allocated */
-    struct timespec st_atim; /* Time of last access */
-    struct timespec st_mtim; /* Time of last modification */
-    struct timespec st_ctim; /* Time of last status change */
+    time_t st_mtim; /* Time of last modification */
     t_file *next;
-    t_file *subdirectories;
+    t_file *subdirs;
 };
 
 struct s_sort_stack_item {
@@ -86,14 +104,13 @@ int mx_parse_flags(int argc, char **argv, int *flags);
 void mx_ls_error(char *s, int error);
 
 // files.c
-// t_file *mx_create_file(char *path);
-t_file *mx_create_file(char *path, char *full_path);
+t_file *mx_create_file(char *path, char full_path[PATH_MAX]);
 void mx_lst_add_file(t_file **list, t_file *file);
 
 // get_file_list.c
-void mx_get_data_set(char *dirname, int flags, t_file **list);
+void mx_get_file_list(char *dirname, int flags, t_file **list);
 
-// sorting.c
+// sorting_algo.c
 void mx_lst_sort(t_file **list,
                  bool (*cmp)(t_file *, t_file *, int reverse), int flags);
 
@@ -101,10 +118,29 @@ void mx_lst_sort(t_file **list,
 bool mx_sort_by_name(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_size(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse);
+void mx_sort_by(t_file **list, int flags, char sort);
 
-// output.c
+// print_total_nblocks.c
+void mx_print_total_nblocks(t_file *list);
+
+// print_chmod.c
 void mx_output(t_file *list, int flags);
 void mx_print_chmod(char chmod[12], t_file *file);
+
+// print_uid.c
+void mx_print_uid(t_file *file);
+
+// print_gid.c
+void mx_print_gid(t_file *file);
+
+// print_size.c
+void mx_print_size(t_file *file);
+
+// print_time.c
+void mx_print_time(t_file *file);
+
+// print_link.c
+void mx_print_link(t_file *file);
 
 //lltoa.c
 char *mx_lltoa(long long int number);
