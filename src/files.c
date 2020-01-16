@@ -15,9 +15,7 @@ t_file *mx_create_file(char *path, char *full_path)
 	file->st_size = stat.st_size;
 	file->st_rdev = stat.st_rdev;
 	file->st_blocks = stat.st_blocks;
-	file->st_atim = stat.st_atimespec;
-	file->st_mtim = stat.st_mtimespec;
-	file->st_ctim = stat.st_ctimespec;
+	file->st_mtim = stat.st_mtime;
     return file;
 }
 

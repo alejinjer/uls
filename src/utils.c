@@ -17,9 +17,6 @@ void mx_ls_error(char *s, int error)
         mx_printerr(strerror(errno));
         mx_printerr("\n");
     }
-    else if (error == ERRNO)
-        mx_printerr(strerror(errno));
-    mx_printerr("\n");
     if (error == USAGE || error == MALL_ERR)
         exit(1);
 }
