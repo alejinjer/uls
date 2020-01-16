@@ -33,16 +33,18 @@ typedef enum e_error {
 ** -1 (LS_ONE) to display results on one column;
 */
 
-#define LS_AA 1
-#define LS_RR 2
-#define LS_SS 4
-#define LS_UU 8
-#define LS_A 16
-#define LS_L 32
-#define LS_R 64
-#define LS_T 128
-#define LS_U 256
-#define LS_ONE 512
+#define LS_AA           1
+#define LS_RR           2
+#define LS_SS           4
+#define LS_UU           8
+#define LS_A            16
+#define LS_L            32
+#define LS_R            64
+#define LS_T            128
+#define LS_U            256
+#define LS_ONE          512
+
+#define MAX(a, b)        b & ((a - b) >> 31) | a & (~(a - b) >> 31)
 
 #define MX_ISBLK(m)      (((m) & S_IFMT) == S_IFBLK)     /* block special */
 #define MX_ISCHR(m)      (((m) & S_IFMT) == S_IFCHR)     /* char special */
@@ -102,6 +104,8 @@ int mx_parse_flags(int argc, char **argv, int *flags);
 
 // utils.c
 void mx_ls_error(char *s, int error);
+void mx_printnchar(char c, int n);
+int mx_intlength(int n);
 
 // files.c
 t_file *mx_create_file(char *path, char full_path[PATH_MAX]);
@@ -145,4 +149,12 @@ void mx_print_link(t_file *file);
 //lltoa.c
 char *mx_lltoa(long long int number);
 
+//spacing_l.c
+int *mx_get_row_size(t_file *file);
+
+//print_major.c
+void mx_print_major(t_file *file);
+
+//print_minor.c
+void mx_print_minor(t_file *file); 
 #endif

@@ -23,3 +23,20 @@ void mx_ls_error(char *s, int error)
     if (error == USAGE || error == MALL_ERR)
         exit(1);
 }
+
+void mx_printnchar(char c, int n) {
+    while (n) {
+        mx_printchar(c);
+        n--;
+    }
+}
+
+int mx_intlength(int n) {
+    int result = 0;
+
+    while (n / 10) {
+        ++result;
+        n /= 10;
+    }
+    return result;
+}
