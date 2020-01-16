@@ -20,14 +20,6 @@ bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse) {
     return (f1->st_mtim > f2->st_mtim) ? 1 : 0;
 }
 
-void mx_sort_by(t_file **list, int flags, char sort) {
-    mx_lst_sort(list, mx_sort_by_name, flags);
-    switch (sort) {
-        case 'S':
-            mx_lst_sort(list, mx_sort_by_size, flags);
-            break;
-        case 't':
-            mx_lst_sort(list, mx_sort_by_mtime, flags);
-            break;
-    }
+bool mx_sort_errors(void *a, void *b) {
+    return (mx_strcmp(a, b) > 0 ? 1 : 0);
 }

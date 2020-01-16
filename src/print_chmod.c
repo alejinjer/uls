@@ -25,10 +25,10 @@ void mx_output(t_file *list, int flags) {
             mx_printstr("   ");
         }
         mx_printstr(list->name);
-        if (MX_ISLNK(list->st_mode)) {
-            mx_printstr(" -> ");
-            mx_printstr(list->symlink);
-        }
+        // if (MX_ISLNK(list->st_mode)) {
+        //     mx_printstr(" -> ");
+        //     mx_printstr(list->symlink);
+        // }
         mx_printstr("\n");
         if (MX_ISDIR(list->st_mode) && list->subdirs && (flags & LS_RR) && strcmp(list->name, "..") != 0 && strcmp(list->name, ".") != 0)
             mx_output(list->subdirs, flags);

@@ -1,43 +1,51 @@
 #include "uls.h"
 
-static char get_last_sort_flag(int argc, char **argv) {
-    int j;
-
-    for (int i = argc; i >= 1; --i) {
-        j = mx_strlen(argv[i]) - 1;
-        for (; j >= 0; j--)
-            if (argv[i][j] == 'S' || argv[i][j] == 't')
-                return argv[i][j];
-    }
-    return '\0';
-}
+static void process_dirs(int argc, char *argv[], int flags, t_file **dirs);
+static void process_other(int argc, char *argv[], t_list **e, t_file **f);
 
 int main(int argc, char *argv[]) {
     // parse flags
     /*...*/
     int flags_count;
     int flags;
-    char last_sort_flag;
-    t_file *list = NULL;
+    t_file *directories = NULL;
+    t_file *files = NULL;
+    t_list *errors = NULL;
 
     if ((flags_count = mx_parse_flags(argc, argv, &flags)) == -1)
         return (1);
     /*...*/
 
-    last_sort_flag = get_last_sort_flag(argc - flags_count, argv);
-
     // parse args and add them to list
     /*...*/
     argv += flags_count;
     argc -= flags_count;
-    for (int i = 0; i < argc; i++)
-        mx_get_file_list(argv[i], flags, &list);
-    mx_sort_by(&list, flags, last_sort_flag);
+    process_other(argc, argv, &errors, &files);
+    process_dirs(argc, argv, flags, &directories);
+    mx_sort_list(errors, mx_sort_errors);
+    mx_lst_sort(&files, mx_sort_by_name, flags);
+    mx_lst_sort(&directories, mx_sort_by_name, flags);
     /*...*/
 
     // display all
-    mx_output(list, flags);
+    while (errors) {
+        mx_printerr((char *)errors->data);
+        errors = errors->next;
+    }
+    mx_output(files, flags);
+    mx_printstr("\n");
+    mx_output(directories, flags);
 
     // system("leaks -q uls");
     return 0;
+}
+
+static void process_other(int argc, char *argv[], t_list **e, t_file **f) {
+    for (int i = 0; i < argc; i++)
+        mx_handle_nonexistent(argv[i], e, f);
+}
+
+static void process_dirs(int argc, char *argv[], int flags, t_file **dirs) {
+    for (int i = 0; i < argc; i++)
+        mx_explore_path(argv[i], flags, dirs);
 }

@@ -108,7 +108,9 @@ t_file *mx_create_file(char *path, char full_path[PATH_MAX]);
 void mx_lst_add_file(t_file **list, t_file *file);
 
 // get_file_list.c
-void mx_get_file_list(char *dirname, int flags, t_file **list);
+void mx_explore_path(char *dirname, int flags, t_file **list);
+void mx_handle_nonexistent(char *dirname, t_list **errors, 
+                                t_file **files);
 
 // sorting_algo.c
 void mx_lst_sort(t_file **list,
@@ -118,7 +120,7 @@ void mx_lst_sort(t_file **list,
 bool mx_sort_by_name(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_size(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse);
-void mx_sort_by(t_file **list, int flags, char sort);
+bool mx_sort_errors(void *a, void *b);
 
 // print_total_nblocks.c
 void mx_print_total_nblocks(t_file *list);
