@@ -44,7 +44,7 @@ typedef enum e_error {
 #define LS_U            256
 #define LS_ONE          512
 
-#define MAX(a, b)        b & ((a - b) >> 31) | a & (~(a - b) >> 31)
+#define MX_MAX(a, b)        b & ((a - b) >> 31) | a & (~(a - b) >> 31)
 
 #define MX_ISBLK(m)      (((m) & S_IFMT) == S_IFBLK)     /* block special */
 #define MX_ISCHR(m)      (((m) & S_IFMT) == S_IFCHR)     /* char special */
@@ -70,6 +70,9 @@ typedef enum e_error {
 #define MX_ISUID         0004000         /* [XSI] set user id on execution */
 #define MX_ISGID         0002000         /* [XSI] set group id on execution */
 #define MX_ISVTX         0001000         /* [XSI] directory restrcted delete */
+
+#define MX_MAJOR(x)        ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
+#define MX_MINOR(x)        ((int32_t)((x) & 0xffffff))
 
 typedef struct stat t_stat;
 typedef struct dirent t_dirent;

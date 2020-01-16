@@ -8,7 +8,7 @@ void mx_handle_nonexistent(char *dirname, t_list **errors,
     t_file *file = NULL;
     DIR *d = opendir(dirname);
 
-    if (!d) {
+    if (!opendir(dirname)) {
         if (lstat(dirname, &stat) == -1) {
             char *error_message = mx_strnew(mx_strlen(dirname) 
                                     + mx_strlen(strerror(errno)) + 7);

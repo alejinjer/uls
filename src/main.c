@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         mx_printerr((char *)errors->data);
         errors = errors->next;
     }
-    files ? mx_output(files, flags) : (void)0;
+    // files ? mx_output(files, flags) : (void)0;
     mx_printstr("\n");
     directories ? mx_output(directories, flags) : (void)0;
 

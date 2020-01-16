@@ -31,6 +31,7 @@ SRC	= 	main.c\
 		print_minor.c\
 		lltoa.c\
 		spacing_l.c\
+		output.c\
 
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
 OBJS	=	$(addprefix $(OBJD)/, $(SRC:%.c=%.o))
