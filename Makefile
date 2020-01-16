@@ -27,8 +27,11 @@ SRC	= 	main.c\
 		print_size.c\
 		print_time.c\
 		print_link.c\
+		print_major.c\
+		print_minor.c\
 		lltoa.c\
-		
+		spacing_l.c\
+
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
 OBJS	=	$(addprefix $(OBJD)/, $(SRC:%.c=%.o))
 
