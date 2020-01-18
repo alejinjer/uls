@@ -29,6 +29,16 @@ void mx_printnchar(char c, int n) {
 }
 
 int mx_intlength(int n) {
+    int result = 1;
+
+    while (n / 10) {
+        ++result;
+        n /= 10;
+    }
+    return result;
+}
+
+int mx_longlong_length(long long int n) {
     int result = 0;
 
     while (n / 10) {

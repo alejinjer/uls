@@ -109,6 +109,7 @@ int mx_parse_flags(int argc, char **argv, int *flags);
 void mx_ls_error(char *s, int error);
 void mx_printnchar(char c, int n);
 int mx_intlength(int n);
+int mx_longlong_length(long long int n);
 
 // files.c
 t_file *mx_create_file(char *path, char full_path[PATH_MAX]);
@@ -134,16 +135,19 @@ void mx_print_total_nblocks(t_file *list);
 
 // print_chmod.c
 void mx_output(t_file *list, int flags);
-void mx_print_chmod(char chmod[12], t_file *file);
+void mx_print_chmod(t_file *file, int nspaces);
+
+// print_nlinks.c
+void mx_print_nlinks(t_file *file, int nspaces);
 
 // print_uid.c
-void mx_print_uid(t_file *file);
+void mx_print_uid(t_file *file, int nspaces);
 
 // print_gid.c
-void mx_print_gid(t_file *file);
+void mx_print_gid(t_file *file, int nspaces);
 
 // print_size.c
-void mx_print_size(t_file *file);
+void mx_print_size(t_file *file, int nspaces);
 
 // print_time.c
 void mx_print_time(t_file *file);
@@ -158,8 +162,9 @@ char *mx_lltoa(long long int number);
 int *mx_get_row_size(t_file *file);
 
 //print_major.c
-void mx_print_major(t_file *file);
+void mx_print_major(t_file *file, int nspaces);
 
 //print_minor.c
-void mx_print_minor(t_file *file); 
+void mx_print_minor(t_file *file, int nspaces);
+
 #endif

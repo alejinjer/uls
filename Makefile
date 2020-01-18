@@ -22,6 +22,7 @@ SRC	= 	main.c\
 		sorting_flags.c\
 		print_total_nblocks.c\
 		print_chmod.c\
+		print_nlinks.c\
 		print_uid.c\
 		print_gid.c\
 		print_size.c\

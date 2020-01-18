@@ -8,7 +8,7 @@ void mx_handle_nonexistent(char *dirname, t_list **errors,
     t_file *file = NULL;
     DIR *d = opendir(dirname);
 
-    if (!opendir(dirname)) {
+    if (!d) {
         if (lstat(dirname, &stat) == -1) {
             char *error_message = mx_strnew(mx_strlen(dirname) 
                                     + mx_strlen(strerror(errno)) + 7);
@@ -35,7 +35,6 @@ void mx_explore_path(char *dirname, int flags, t_file **list) {
     t_dirent *entry = NULL;
 
     if (!d) {
-        // mx_ls_error(dirname, ERRNO);
         return;
     }
     while ((entry = readdir(d))) {
