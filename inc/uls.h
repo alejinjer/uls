@@ -8,11 +8,11 @@
 #include <sys/acl.h>
 #include <sys/xattr.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
 #include <pwd.h>
 #include <grp.h>
 #include <uuid/uuid.h>
 #include <time.h>
-
 typedef enum e_error {
     ERRNO,
     USAGE,
@@ -80,6 +80,7 @@ typedef struct passwd t_passwd;
 typedef struct group t_group;
 typedef struct s_file t_file;
 typedef struct s_sort_stack_item t_sort_item;
+typedef struct s_lines t_lines;
 
 struct s_file {
     char *name;
@@ -102,6 +103,11 @@ struct s_sort_stack_item {
     t_file *item;
 };
 
+struct s_lines {
+    int lines;
+    int rows;
+};
+
 // parse_flags.c
 int mx_parse_flags(int argc, char **argv, int *flags);
 
@@ -110,6 +116,7 @@ void mx_ls_error(char *s, int error);
 void mx_printnchar(char c, int n);
 int mx_intlength(int n);
 int mx_longlong_length(long long int n);
+int mx_list_max(t_file *files);
 
 // files.c
 t_file *mx_create_file(char *path, char full_path[PATH_MAX]);
@@ -167,4 +174,7 @@ void mx_print_major(t_file *file, int nspaces);
 //print_minor.c
 void mx_print_minor(t_file *file, int nspaces);
 
+//multicolumn.c
+t_lines *mx_multicolumn(t_file *files);
+void mx_output_multicolumn(t_file *files);
 #endif

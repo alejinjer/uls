@@ -33,9 +33,7 @@ int main(int argc, char *argv[]) {
         errors = errors->next;
     }
     files ? mx_output(files, flags) : (void)0;
-    // mx_printstr("\n");
     directories ? mx_output(directories, flags) : (void)0;
-
     // system("leaks -q uls");
     return 0;
 }
