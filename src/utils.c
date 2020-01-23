@@ -6,7 +6,7 @@ void mx_ls_error(char *s, int error)
     {
         mx_printerr("uls: illegal option -- ");
         write(2, s, 1);
-        mx_terminate("\nusage: uls [-ARSUalrtu1] [file ...]");
+        mx_terminate("\nusage: uls [ACRSUacflrtu1] [file ...]");
     }
     else if (error == ERRNO || error == MALL_ERR)
         mx_printerr("uls: ");
@@ -39,7 +39,7 @@ int mx_intlength(int n) {
 }
 
 int mx_longlong_length(long long int n) {
-    int result = 0;
+    int result = 1;
 
     while (n / 10) {
         ++result;
