@@ -32,8 +32,8 @@ int main(int argc, char *argv[]) {
         mx_printerr((char *)errors->data);
         errors = errors->next;
     }
-    files ? mx_output(files, flags) : (void)0;
-    directories ? mx_output(directories, flags) : (void)0;
+    files ? mx_output_multicolumn(files) : (void)0;
+    directories ? mx_output_multicolumn(directories) : (void)0;
     // system("leaks -q uls");
     return 0;
 }

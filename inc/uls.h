@@ -80,7 +80,7 @@ typedef struct passwd t_passwd;
 typedef struct group t_group;
 typedef struct s_file t_file;
 typedef struct s_sort_stack_item t_sort_item;
-typedef struct s_lines t_lines;
+typedef struct s_list_info t_list_info;
 
 struct s_file {
     char *name;
@@ -103,9 +103,12 @@ struct s_sort_stack_item {
     t_file *item;
 };
 
-struct s_lines {
+struct s_list_info {
     int lines;
     int rows;
+    int size;
+    int max_word_size;
+    int words;
 };
 
 // parse_flags.c
@@ -175,6 +178,5 @@ void mx_print_major(t_file *file, int nspaces);
 void mx_print_minor(t_file *file, int nspaces);
 
 //multicolumn.c
-t_lines *mx_multicolumn(t_file *files);
 void mx_output_multicolumn(t_file *files);
 #endif
