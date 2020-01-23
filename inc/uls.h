@@ -4,14 +4,14 @@
 #include "libmx.h"
 #include <dirent.h>
 #include <errno.h>
-#include <sys/stat.h>
-#include <sys/acl.h>
-#include <sys/xattr.h>
-#include <sys/types.h>
-#include <pwd.h>
 #include <grp.h>
-#include <uuid/uuid.h>
+#include <pwd.h>
+#include <sys/acl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/xattr.h>
 #include <time.h>
+#include <uuid/uuid.h>
 
 typedef enum e_error {
     ERRNO,
@@ -33,46 +33,49 @@ typedef enum e_error {
 ** -1 (LS_ONE) to display results on one column;
 */
 
-#define LS_AA           1
-#define LS_RR           2
-#define LS_SS           4
-#define LS_UU           8
-#define LS_A            16
-#define LS_L            32
-#define LS_R            64
-#define LS_T            128
-#define LS_U            256
-#define LS_ONE          512
+#define LS_AA 1
+#define LS_CC 2
+#define LS_RR 4
+#define LS_SS 8
+#define LS_UU 16
+#define LS_A 32
+#define LS_C 64
+#define LS_F 128
+#define LS_L 256
+#define LS_R 512
+#define LS_T 1024
+#define LS_U 2048
+#define LS_ONE 4096
 
-#define MX_MAX(a, b)        b & ((a - b) >> 31) | a & (~(a - b) >> 31)
+#define MX_MAX(a, b) b &((a - b) >> 31) | a &(~(a - b) >> 31)
 
-#define MX_ISBLK(m)      (((m) & S_IFMT) == S_IFBLK)     /* block special */
-#define MX_ISCHR(m)      (((m) & S_IFMT) == S_IFCHR)     /* char special */
-#define MX_ISDIR(m)      (((m) & S_IFMT) == S_IFDIR)     /* directory */
-#define MX_ISFIFO(m)     (((m) & S_IFMT) == S_IFIFO)     /* fifo or socket */
-#define MX_ISREG(m)      (((m) & S_IFMT) == S_IFREG)     /* regular file */
-#define MX_ISLNK(m)      (((m) & S_IFMT) == S_IFLNK)     /* symbolic link */
-#define MX_ISSOCK(m)     (((m) & S_IFMT) == S_IFSOCK)    /* socket */
+#define MX_ISBLK(m) (((m)&S_IFMT) == S_IFBLK)   /* block special */
+#define MX_ISCHR(m) (((m)&S_IFMT) == S_IFCHR)   /* char special */
+#define MX_ISDIR(m) (((m)&S_IFMT) == S_IFDIR)   /* directory */
+#define MX_ISFIFO(m) (((m)&S_IFMT) == S_IFIFO)  /* fifo or socket */
+#define MX_ISREG(m) (((m)&S_IFMT) == S_IFREG)   /* regular file */
+#define MX_ISLNK(m) (((m)&S_IFMT) == S_IFLNK)   /* symbolic link */
+#define MX_ISSOCK(m) (((m)&S_IFMT) == S_IFSOCK) /* socket */
 
 /* Read, write, execute/search by user */
-#define MX_IRUSR         0000400         /* [XSI] R for owner */
-#define MX_IWUSR         0000200         /* [XSI] W for owner */
-#define MX_IXUSR         0000100         /* [XSI] X for owner */
+#define MX_IRUSR 0000400 /* [XSI] R for owner */
+#define MX_IWUSR 0000200 /* [XSI] W for owner */
+#define MX_IXUSR 0000100 /* [XSI] X for owner */
 /* Read, write, execute/search by group */
-#define MX_IRGRP         0000040         /* [XSI] R for group */
-#define MX_IWGRP         0000020         /* [XSI] W for group */
-#define MX_IXGRP         0000010         /* [XSI] X for group */
+#define MX_IRGRP 0000040 /* [XSI] R for group */
+#define MX_IWGRP 0000020 /* [XSI] W for group */
+#define MX_IXGRP 0000010 /* [XSI] X for group */
 /* Read, write, execute/search by others */
-#define MX_IROTH         0000004         /* [XSI] R for other */
-#define MX_IWOTH         0000002         /* [XSI] W for other */
-#define MX_IXOTH         0000001         /* [XSI] X for other */
+#define MX_IROTH 0000004 /* [XSI] R for other */
+#define MX_IWOTH 0000002 /* [XSI] W for other */
+#define MX_IXOTH 0000001 /* [XSI] X for other */
 
-#define MX_ISUID         0004000         /* [XSI] set user id on execution */
-#define MX_ISGID         0002000         /* [XSI] set group id on execution */
-#define MX_ISVTX         0001000         /* [XSI] directory restrcted delete */
+#define MX_ISUID 0004000 /* [XSI] set user id on execution */
+#define MX_ISGID 0002000 /* [XSI] set group id on execution */
+#define MX_ISVTX 0001000 /* [XSI] directory restrcted delete */
 
-#define MX_MAJOR(x)        ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
-#define MX_MINOR(x)        ((int32_t)((x) & 0xffffff))
+#define MX_MAJOR(x) ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
+#define MX_MINOR(x) ((int32_t)((x)&0xffffff))
 
 typedef struct stat t_stat;
 typedef struct dirent t_dirent;
@@ -85,14 +88,16 @@ struct s_file {
     char *name;
     char full_path[PATH_MAX];
     char symlink[NAME_MAX];
-    mode_t st_mode;          /* File type and mode */
-    nlink_t st_nlink;        /* Number of hard links */
-    uid_t st_uid;            /* User ID of owner */
-    gid_t st_gid;            /* Group ID of owner */
-    dev_t st_rdev;           /* Device ID (if special file) */
-    off_t st_size;           /* Total size, in bytes */
-    blkcnt_t st_blocks;      /* Number of 512B blocks allocated */
-    time_t st_mtim; /* Time of last modification */
+    mode_t st_mode;               /* File type and mode */
+    nlink_t st_nlink;             /* Number of hard links */
+    uid_t st_uid;                 /* User ID of owner */
+    gid_t st_gid;                 /* Group ID of owner */
+    dev_t st_rdev;                /* Device ID (if special file) */
+    off_t st_size;                /* Total size, in bytes */
+    blkcnt_t st_blocks;           /* Number of 512B blocks allocated */
+    struct timespec st_atimespec; /* time of last access */
+    struct timespec st_mtimespec; /* time of last data modification */
+    struct timespec st_ctimespec; /* time of last status change */
     t_file *next;
     t_file *subdirs;
 };
@@ -117,8 +122,10 @@ void mx_lst_add_file(t_file **list, t_file *file);
 
 // get_file_list.c
 void mx_explore_path(char *dirname, int flags, t_file **list);
-void mx_handle_nonexistent(char *dirname, t_list **errors, 
-                                t_file **files);
+void mx_handle_nonexistent(char *dirname, t_list **errors,
+                           t_file **files);
+t_list *mx_process_args(char *argv[], t_file **files,
+                        t_file **dirs, int flags);
 
 // sorting_algo.c
 void mx_lst_sort(t_file **list,
@@ -166,5 +173,8 @@ void mx_print_major(t_file *file, int nspaces);
 
 //print_minor.c
 void mx_print_minor(t_file *file, int nspaces);
+
+// err_output.c
+void mx_err_output(t_list *errors);
 
 #endif

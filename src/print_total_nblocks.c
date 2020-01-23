@@ -20,5 +20,6 @@ void mx_print_total_nblocks(t_file *list) {
     mx_printstr("total ");
     total_str = mx_itoa(total);
     mx_printstr(total_str);
+    mx_printchar('\n');
     mx_strdel(&total_str);
 }

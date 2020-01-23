@@ -16,8 +16,8 @@ bool mx_sort_by_size(t_file *f1, t_file *f2, int reverse) {
 // -t
 bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse) {
     if (!reverse)
-        return (f1->st_mtim >= f2->st_mtim) ? 0 : 1;
-    return (f1->st_mtim > f2->st_mtim) ? 1 : 0;
+        return (f1->st_mtimespec.tv_sec >= f2->st_mtimespec.tv_sec) ? 0 : 1;
+    return (f1->st_mtimespec.tv_sec > f2->st_mtimespec.tv_sec) ? 1 : 0;
 }
 
 bool mx_sort_errors(void *a, void *b) {

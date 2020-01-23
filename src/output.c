@@ -1,30 +1,37 @@
 #include "uls.h"
 
+static void print_line(t_file *file, int *size, int flags) {
+    if (flags & LS_L) {
+        mx_print_chmod(file, 1);
+        mx_print_nlinks(file, size[0]);
+        mx_print_uid(file, size[1]);
+        mx_print_gid(file, size[2]);
+        if (MX_ISCHR(file->st_mode) || MX_ISBLK(file->st_mode)) {
+            mx_print_major(file, 3);
+            mx_print_minor(file, 3);
+        }
+        else
+            mx_print_size(file, size[3]);
+        mx_print_time(file);
+    }
+    mx_printstr(file->name);
+    MX_ISLNK(file->st_mode) ? mx_print_link(file) : (void)0;
+    mx_printstr("\n");
+}
+
 void mx_output(t_file *list, int flags) {
     int *size = mx_get_row_size(list);
 
-    if (flags & LS_L && MX_ISDIR(list->st_mode)) {
+    if ((flags & LS_L) && MX_ISDIR(list->st_mode)) {
         mx_print_total_nblocks(list);
-        mx_printstr("\n");
     }
     while (list) {
         if (flags & LS_L) {
-            mx_print_chmod(list, size[0]);
-            mx_print_nlinks(list, size[1]);
-            mx_print_uid(list, size[2]);
-            mx_print_gid(list, size[3]);
-            MX_ISCHR(list->st_mode) || MX_ISBLK(list->st_mode) 
-                ? (mx_print_major(list, size[5]), mx_print_minor(list, size[6])) // to fix
-                : mx_print_size(list, size[4]);
-            mx_print_time(list);
+            print_line(list, size, flags);
+        } else {
+            mx_printstr(list->name);
+            mx_printstr("\n");
         }
-        mx_printstr(list->name);
-        MX_ISLNK(list->st_mode) ? mx_print_link(list) : (void)0;
-        mx_printstr("\n");
-        if (MX_ISDIR(list->st_mode) && list->subdirs && (flags & LS_RR) 
-            && mx_strcmp(list->name, "..") != 0 
-            && mx_strcmp(list->name, ".") != 0)
-            mx_output(list->subdirs, flags);
         list = list->next;
     }
     free(size);
