@@ -21,6 +21,7 @@ static void print_line(t_file *file, int *size, int flags) {
 
 void mx_output(t_file *list, int flags) {
     int *size = mx_get_row_size(list);
+    int max_length = mx_list_max(list);
 
     if ((flags & LS_L) && MX_ISDIR(list->st_mode)) {
         mx_print_total_nblocks(list);

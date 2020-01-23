@@ -2,8 +2,7 @@
 
 static int parse_options(char *s, int *flags);
 
-int mx_parse_flags(int argc, char **argv, int *flags)
-{
+int mx_parse_flags(int argc, char **argv, int *flags) {
     int i = 0;
 
     *flags = 0;
@@ -17,8 +16,7 @@ int mx_parse_flags(int argc, char **argv, int *flags)
     return (i);
 }
 
-static int parse_options(char *s, int *flags)
-{
+static int parse_options(char *s, int *flags) {
     int n;
 
     while (*(++s))

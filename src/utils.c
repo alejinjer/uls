@@ -47,3 +47,14 @@ int mx_longlong_length(long long int n) {
     }
     return result;
 }
+
+int mx_list_max(t_file *files) {
+    int max = 0;
+
+    while (files) {
+        if (mx_strlen(files->name) > max)
+            max = mx_strlen(files->name);
+        files = files->next;
+    }
+    return max;
+}

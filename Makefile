@@ -33,6 +33,7 @@ SRC	= 	main.c\
 		lltoa.c\
 		spacing_l.c\
 		output.c\
+		multicolumn.c\
 		err_output.c\
 
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
