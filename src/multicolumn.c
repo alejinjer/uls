@@ -49,6 +49,7 @@ static t_list_info *multicolumn(t_file *files) {
 void mx_output_multicolumn(t_file *files) {
     t_list_info *info = multicolumn(files);
     int prev_strlen = 0;
+    char *s = NULL;
 
     info->size = total_words(files);
     info->max_word_size = mx_list_max(files);
@@ -59,8 +60,11 @@ void mx_output_multicolumn(t_file *files) {
                 mx_printchar('\t');
             }
             if (i + j < info->size) {
-                mx_printstr(get_nth_element(files, i + j));
-                prev_strlen = mx_strlen(get_nth_element(files, i + j));
+                s = get_nth_element(files, i + j);
+                if (s[mx_strlen(s) - 1] == '\r')
+                    s[mx_strlen(s) - 1] = '?';
+                mx_printstr(s);
+                prev_strlen = mx_strlen(s);
             }
         }
         mx_printchar('\n');
