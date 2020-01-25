@@ -18,6 +18,7 @@ t_file *mx_create_file(char *path, char *full_path)
 	file->st_atimespec = stat.st_atimespec;
 	file->st_mtimespec = stat.st_mtimespec;
 	file->st_ctimespec = stat.st_ctimespec;
+	file->st_btimespec = stat.st_birthtimespec;
     return file;
 }
 
@@ -28,4 +29,14 @@ void mx_lst_add_file(t_file **list, t_file *file) {
 	}
 	file->next = *list;
     *list = file;
+}
+
+int mx_lst_size(t_file *list) {
+	int result = 0;
+
+	while (list) {
+  		++result;
+  		list = list->next;
+ 	}
+ 	return result;
 }

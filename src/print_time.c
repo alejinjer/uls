@@ -1,12 +1,13 @@
 #include "uls.h"
 
-void mx_print_time(t_file *file) {
-    char *temp_time = ctime(&(file->st_mtimespec.tv_sec));
+void mx_print_time(time_t *t) {
+    char *temp_time = ctime(t);
     char *result = mx_strnew(12);
     time_t now = time(NULL);
+    long half_year = 15778463;
 
-    if ((now - 15778463) > file->st_mtimespec.tv_sec
-        || now < file->st_mtimespec.tv_sec)
+    if ((now - half_year) > *t
+        || now < *t)
     {
         result = mx_strncpy(result, temp_time + 4, 6);
         mx_strcpy(result + 6, "  ");

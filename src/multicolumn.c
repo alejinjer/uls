@@ -14,8 +14,9 @@ static int total_words(t_file *files) {
 
 static int terminal_size() {
     struct winsize w;
-
-    ioctl(0, TIOCGWINSZ, &w);
+    if (isatty(1))
+        ioctl(0, TIOCGWINSZ, &w);
+    else w.ws_col = 80;
     return w.ws_col;
 }
 
@@ -46,6 +47,25 @@ static t_list_info *multicolumn(t_file *files) {
     return info;
 }
 
+void mx_count_tabs(int max_len, int prev_len) {
+    int spaces_count = 0;
+    int tabs_count = 0;
+
+    if (!(max_len % 8))
+        spaces_count = max_len + 8;
+    else {
+        spaces_count = max_len;
+        while (spaces_count % 8)
+            spaces_count++;
+    }
+    tabs_count = (spaces_count - prev_len) / 8;
+    if (!(prev_len % 8))
+        tabs_count--;
+    while (tabs_count--)
+        mx_printchar('\t');
+    mx_printchar('\t');
+}
+
 void mx_output_multicolumn(t_file *files) {
     t_list_info *info = multicolumn(files);
     int prev_strlen = 0;
@@ -54,9 +74,8 @@ void mx_output_multicolumn(t_file *files) {
     info->max_word_size = mx_list_max(files);
     for (int i = 0; i < info->rows; i++) {
         for (int j = 0; j < info->size; j+=info->rows) {
-            if (j != 0) {
-                mx_printnchar(' ', info->max_word_size - prev_strlen);
-                mx_printchar('\t');
+            if (j != 0 && ((i + j) != mx_lst_size(files))) {
+                mx_count_tabs(info->max_word_size, prev_strlen);
             }
             if (i + j < info->size) {
                 mx_printstr(get_nth_element(files, i + j));

@@ -49,6 +49,7 @@ typedef enum e_error {
 #define LS_T 1024
 #define LS_U 2048
 #define LS_ONE 4096
+#define LS_H 8192
 
 #define MX_MAX(a, b) b &((a - b) >> 31) | a &(~(a - b) >> 31)
 
@@ -102,6 +103,7 @@ struct s_file {
     struct timespec st_atimespec; /* time of last access */
     struct timespec st_mtimespec; /* time of last data modification */
     struct timespec st_ctimespec; /* time of last status change */
+    struct timespec st_btimespec; /*  File creation time(birth)  */
     t_file *next;
     t_file *subdirs;
 };
@@ -132,6 +134,7 @@ int mx_list_max(t_file *files);
 // files.c
 t_file *mx_create_file(char *path, char full_path[PATH_MAX]);
 void mx_lst_add_file(t_file **list, t_file *file);
+int mx_lst_size(t_file *list);
 
 // get_file_list.c
 void mx_explore_path(char *dirname, int flags, t_file **list);
@@ -170,8 +173,9 @@ void mx_print_gid(t_file *file, int nspaces);
 void mx_print_size(t_file *file, int nspaces);
 
 // print_time.c
-void mx_print_time(t_file *file);
-
+void mx_print_time(time_t *t);
+// void mx_print_last_changed_time(t_file *file);
+// void mx_print_last_access_time(t_file *file);
 // print_link.c
 void mx_print_link(t_file *file);
 
@@ -189,8 +193,9 @@ void mx_print_minor(t_file *file, int nspaces);
 
 //multicolumn.c
 void mx_output_multicolumn(t_file *files);
-
+void mx_count_tabs(int max_len, int prev_len);
 // err_output.c
 void mx_err_output(t_list *errors);
-
+// convert_to_h.c
+char *mx_convert_to_h(long long size);
 #endif
