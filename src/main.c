@@ -1,16 +1,10 @@
 #include "uls.h"
 
 void mx_choose_output(t_file *list, int flags) {
-    if (!isatty(1)) {
-        if (flags & LS_CC)
-            mx_output_multicolumn(list->subdirs);
-        else
-            mx_output(list, flags);
-    }
-    else if ((flags & LS_L) || (flags & LS_ONE))
+    if ((flags & LS_L) || (flags & LS_ONE) || (flags & LS_M))
         mx_output(list, flags);
     else
-        mx_output_multicolumn(list->subdirs);
+        mx_output_multicolumn(list->subdirs, flags);
 }
 void mx_print_dirs(t_file *list, int flags, int lst_size) {
     t_file *ptr = list;

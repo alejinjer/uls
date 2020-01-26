@@ -6,7 +6,7 @@ void mx_ls_error(char *s, int error)
     {
         mx_printerr("uls: illegal option -- ");
         write(2, s, 1);
-        mx_terminate("\nusage: uls [ACRSUacflrtu1] [file ...]");
+        mx_terminate("\nusage: uls [ACRSUacflrtu1hmp] [file ...]");
     }
     else if (error == ERRNO || error == MALL_ERR)
         mx_printerr("uls: ");

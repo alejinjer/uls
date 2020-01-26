@@ -21,7 +21,7 @@ static int parse_options(char *s, int *flags) {
 
     while (*(++s))
     {
-        if ((n = mx_get_char_index("ACRSUacflrtu1h", *s)) == -1)
+        if ((n = mx_get_char_index("ACRSUacflrtu1hmp", *s)) == -1)
             mx_ls_error(s, USAGE);
         *flags |= (1 << n);
         if ((*s == 'l') || (*s == '1'))

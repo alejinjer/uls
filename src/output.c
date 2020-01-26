@@ -15,28 +15,52 @@ static void print_line(t_file *file, int *size, int flags) {
         mx_print_minor(file, 3);
     }
     else
-        mx_print_size(file, size[3]);
+        mx_print_size(file, size[3], flags);
     mx_print_time(t);
-    mx_printstr(file->name);
+    mx_print_name(file, flags);
     MX_ISLNK(file->st_mode) ? mx_print_link(file) : (void)0;
     mx_printstr("\n");
+}
+
+static void ls_m(t_file *list, int flags) {
+    static int counter = 0;
+    int win_size = mx_terminal_size(flags);
+    int i = (flags & LS_P) ? 3 : 2;
+
+    mx_print_name(list, flags);
+    list->next ? mx_printstr(", ") : (void)0;
+    counter += mx_strlen(list->name);
+    if (flags & LS_P && MX_ISDIR(list->st_mode))
+        counter += 3;
+    else 
+        counter += 2;
+    if (list->next) {
+        if (counter + mx_strlen(list->next->name) > win_size - i) {
+            mx_printchar('\n');
+            counter = 0;
+        }
+    }
+    !list->next ? mx_printchar('\n') : (void)0; 
 }
 
 void mx_output(t_file *list, int flags) {
     int *size; 
 
-    if ((flags & LS_L) && MX_ISDIR(list->st_mode)) {
+    if ((flags & LS_L) && MX_ISDIR(list->st_mode))
         mx_print_total_nblocks(list);
-    }
     list = list->subdirs;
     size = mx_get_row_size(list);
     while (list) {
-        if ((flags & LS_ONE) || !isatty(1))  
-            mx_printstr(mx_strcat(list->name, "\n"));
-        else if (flags & LS_L) {
+        if (flags & LS_M)
+            ls_m(list, flags);
+        else if ((flags & LS_ONE)) {
+            mx_print_name(list, flags);
+            mx_printchar('\n');
+        }
+        else if (flags & LS_L)
             print_line(list, size, flags);
-        } else {
-            mx_output_multicolumn(list);
+        else {
+            mx_output_multicolumn(list, flags);
             return;
         }
         list = list->next;
