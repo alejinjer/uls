@@ -24,8 +24,18 @@ static int parse_options(char *s, int *flags) {
         if ((n = mx_get_char_index("ACRSUacflrtu1", *s)) == -1)
             mx_ls_error(s, USAGE);
         *flags |= (1 << n);
-        if ((*s == 'l') || (*s == '1'))
-            *flags &= (*s == 'l') ? ~LS_ONE : ~LS_L;
+        if ((*s == 'l') || (*s == '1') || (*s == 'C')) {
+            *flags &= (*s == 'l') ? ~(LS_ONE + LS_CC) : ~LS_L;
+            *flags &= (*s == '1') ? ~(LS_L + LS_CC) : ~LS_ONE;
+            *flags &= (*s == 'C') ? ~(LS_ONE + LS_L) : ~LS_CC;
+        }
+        if ((*s == 'U') || (*s == 'c') || (*s == 'u')) {
+            *flags &= (*s == 'U') ? ~(LS_U + LS_C) : ~LS_UU;
+            *flags &= (*s == 'c') ? ~(LS_UU + LS_U) : ~LS_C;
+            *flags &= (*s == 'u') ? ~(LS_UU + LS_C) : ~LS_U;
+        }
     }
+    (*flags & LS_F) ? *flags &= ~(LS_T + LS_SS) : 0;
+    (*flags & LS_SS) ? *flags &= ~LS_T : 0;
     return (1);
 }

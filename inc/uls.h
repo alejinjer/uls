@@ -7,14 +7,12 @@
 #include <grp.h>
 #include <pwd.h>
 #include <sys/acl.h>
+#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
-#include <pwd.h>
-#include <grp.h>
-#include <uuid/uuid.h>
 #include <sys/xattr.h>
 #include <time.h>
+#include <uuid/uuid.h>
 
 typedef enum e_error {
     ERRNO,
@@ -90,18 +88,19 @@ typedef struct s_list_info t_list_info;
 
 struct s_file {
     char *name;
-    char full_path[PATH_MAX];
+    char *full_path;
     char symlink[NAME_MAX];
-    mode_t st_mode;               /* File type and mode */
-    nlink_t st_nlink;             /* Number of hard links */
-    uid_t st_uid;                 /* User ID of owner */
-    gid_t st_gid;                 /* Group ID of owner */
-    dev_t st_rdev;                /* Device ID (if special file) */
-    off_t st_size;                /* Total size, in bytes */
-    blkcnt_t st_blocks;           /* Number of 512B blocks allocated */
-    struct timespec st_atimespec; /* time of last access */
-    struct timespec st_mtimespec; /* time of last data modification */
-    struct timespec st_ctimespec; /* time of last status change */
+    mode_t st_mode;                   /* File type and mode */
+    nlink_t st_nlink;                 /* Number of hard links */
+    uid_t st_uid;                     /* User ID of owner */
+    gid_t st_gid;                     /* Group ID of owner */
+    dev_t st_rdev;                    /* Device ID (if special file) */
+    off_t st_size;                    /* Total size, in bytes */
+    blkcnt_t st_blocks;               /* Number of 512B blocks allocated */
+    struct timespec st_atimespec;     /* time of last access */
+    struct timespec st_mtimespec;     /* time of last data modification */
+    struct timespec st_ctimespec;     /* time of last status change */
+    struct timespec st_birthtimespec; /*  File creation time(birth)  */
     t_file *next;
     t_file *subdirs;
 };
@@ -130,8 +129,9 @@ int mx_longlong_length(long long int n);
 int mx_list_max(t_file *files);
 
 // files.c
-t_file *mx_create_file(char *path, char full_path[PATH_MAX]);
+t_file *mx_create_file(char *name, char *dirname);
 void mx_lst_add_file(t_file **list, t_file *file);
+int mx_lst_size(t_file *list);
 
 // get_file_list.c
 void mx_explore_path(char *dirname, int flags, t_file **list);
