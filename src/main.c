@@ -1,107 +1,71 @@
 #include "uls.h"
 
-// static void sort_all(t_list **errs, t_file **files, t_file **dirs, int flags) {
-//     t_file *dir_ptr;
+void mx_print_dirs(t_file *list, int flags);
 
-//     mx_lst_sort(files, mx_sort_by_name, flags);
-//     mx_lst_sort(dirs, mx_sort_by_name, flags);
-//     dir_ptr = *dirs;
-//     while (dir_ptr) {
-//         if (dir_ptr->subdirs)
-//             mx_lst_sort(&dir_ptr->subdirs, mx_sort_by_name, flags);
-//         dir_ptr = dir_ptr->next;
-//     }
-// }
-
-// static void print_all(t_list *errs, t_file *files, t_file *dirs, int flags)
-// {
-//     t_file *dir_ptr = dirs;
-
-//     mx_err_output(errs);
-//     files ? mx_output(files, flags) : (void)0;
-//     dirs ? mx_output(dirs, flags) : (void)0;
-//     if (dir_ptr && (flags & LS_RR)) {
-//         while (dir_ptr) {
-//             if (MX_ISDIR(dir_ptr->st_mode)) {
-//                 printf("\n%s:\n", dir_ptr->full_path);
-//                 mx_print_total_nblocks(dir_ptr);
-//             }
-//             print_all(NULL, NULL, dir_ptr->subdirs, flags);
-//             dir_ptr = dir_ptr->next;
-//         }
-//     }
-// }
+void mx_choose_output(t_file *list, int flags, int lst_size) {
+    if (MX_ISDIR(list->st_mode)) {
+        for (int i = 0; list; list = list->next, ++i) {
+            i > 0 ? mx_printchar('\n') : (void)0;
+            if (lst_size > 1 && MX_ISDIR(list->st_mode)) {
+                mx_printstr(list->name);
+                mx_printstr(":\n");
+            }
+            ((flags & LS_L) || (flags & LS_ONE))
+                ? mx_output(list, flags)
+                : mx_output_multicolumn(list->subdirs);
+            if (MX_ISDIR(list->st_mode) && list->subdirs && (flags & LS_RR))
+                mx_print_dirs(list->subdirs, flags);
+        }
+    }
+    else {
+        ((flags & LS_L) || (flags & LS_ONE))
+            ? mx_output(list, flags)
+            : mx_output_multicolumn(list);
+        mx_print_dirs(list, flags);
+    }
+}
 
 void mx_print_dirs(t_file *list, int flags) {
     t_file *ptr = list;
 
     while (ptr) {
-        if (MX_ISDIR(ptr->st_mode) && ptr->subdirs) {
-            mx_output(ptr->subdirs, flags);
-            if (MX_ISDIR(ptr->st_mode) && ptr->subdirs
-                && mx_strcmp(ptr->subdirs->name, ".")
-                && mx_strcmp(ptr->subdirs->name, "..")) 
-            {
-                mx_print_dirs(ptr->subdirs, flags);
-            }
+        if (MX_ISDIR(ptr->st_mode) && ptr->subdirs && (flags & LS_RR) && mx_strcmp(ptr->name, ".") && mx_strcmp(ptr->name, "..")) {
+            mx_printstr("\n");
+            mx_printstr(ptr->full_path);
+            mx_printstr(":\n");
+            mx_choose_output(ptr->subdirs, flags, 0);
         }
         ptr = ptr->next;
     }
 }
 
-void mx_choose_output(char **argv, int flags, int flags_count, t_file *list) {
-    if (!*(argv + flags_count)) {
-        mx_print_dirs(list, flags);
+void mx_choose_sort(t_file **list, int flags) {
+    if (flags & LS_F)
         return;
-    }
-    for (int i = flags_count; i >= 0; i--) {
-        for (int j = mx_strlen(argv[i]) - 1; j >= 0; j--) {
-            if (argv[i][j] == 'C') {
-                // multicolumn
-                return;
-            } else {
-                if (!MX_ISDIR(list->st_mode)) {
-                    mx_output(list, flags);
-                    return;
-                }
-                mx_print_dirs(list, flags);
-                return;
-            }
-        }
-    }
-}
-
-void mx_choose_sort(char **argv, int flags, int flags_count, t_file **list) {
-    !(flags & LS_F) ? mx_lst_sort(list, mx_sort_by_name, flags) : (void)0;
-    if (flags & LS_SS && !(flags & LS_F)) {
+    mx_lst_sort(list, mx_sort_by_name, flags);
+    if (flags & LS_SS)
         mx_lst_sort(list, mx_sort_by_size, flags);
-        return;
-    }
-    if (flags & LS_T && !(flags & LS_F))
-        for (int i = flags_count; i >= 0; i--)
-            for (int j = mx_strlen(argv[i]) - 1; j >= 0; j--) {
-                if (argv[i][j] == 'U') {
-                    //
-                    return;
-                }
-                if (argv[i][j] == 'c') {
-                    //
-                    return;
-                }
-                if (argv[i][j] == 'u') {
-                    //
-                    return;
-                }
-            }
+    // if (flags & LS_T) {
+    //     if (flags & LS_UU)
+    //         mx_lst_sort(list, mx_sort_by_btime, flags);
+    //     else if (flags & LS_C)
+    //         mx_lst_sort(list, mx_sort_by_ctime, flags);
+    //     else if (flags & LS_U)
+    //         mx_lst_sort(list, mx_sort_by_atime, flags);
+    //     else
+    //         mx_lst_sort(list, mx_sort_by_mtime, flags);
+    // }
 }
 
-static void sort_all(char **argv, int flags, int flags_count, t_file **list) {
-    t_file *ptr = *list;
+static void sort_all(t_file **list, int flags) {
+    t_file *ptr;
 
+    mx_choose_sort(list, flags);
+    ptr = *list;
     while (ptr) {
-        mx_choose_sort(argv, flags, flags_count, &ptr->subdirs);
+        mx_choose_sort(&ptr->subdirs, flags);
         if ((flags & LS_RR) && ptr->subdirs) {
-            sort_all(argv, flags, flags_count, &ptr->subdirs);
+            sort_all(&ptr->subdirs, flags);
         }
         ptr = ptr->next;
     }
@@ -116,10 +80,10 @@ int main(int argc, char *argv[]) {
 
     errs ? mx_sort_list(errs, mx_sort_errors) : 0;
     errs ? mx_err_output(errs) : (void)0;
-    files ? mx_choose_sort(argv, flags, flags_count, &files) : (void)0;
-    files ? mx_choose_output(argv, flags, flags_count, files) : (void)0;
-    dirs ? sort_all(argv, flags, flags_count, &dirs) : (void)0;
-    dirs ? mx_choose_output(argv, flags, flags_count, dirs) : (void)0;
+    files ? mx_choose_sort(&files, flags) : (void)0;
+    files ? mx_choose_output(files, flags, 0) : (void)0;
+    dirs ? sort_all(&dirs, flags) : (void)0;
+    dirs ? mx_choose_output(dirs, flags, mx_lst_size(dirs)) : (void)0;
     // system("leaks -q uls");
     return 0;
 }
