@@ -20,6 +20,24 @@ bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse) {
     return (f1->st_mtimespec.tv_sec > f2->st_mtimespec.tv_sec) ? 1 : 0;
 }
 
+bool mx_sort_by_atime(t_file *f1, t_file *f2, int reverse) {
+    if (!reverse)
+        return (f1->st_atimespec.tv_sec >= f2->st_atimespec.tv_sec) ? 0 : 1;
+    return (f1->st_atimespec.tv_sec > f2->st_atimespec.tv_sec) ? 1 : 0;
+}
+
+bool mx_sort_by_btime(t_file *f1, t_file *f2, int reverse) {
+    if (!reverse)
+        return (f1->st_btimespec.tv_sec >= f2->st_btimespec.tv_sec) ? 0 : 1;
+    return (f1->st_mtimespec.tv_sec > f2->st_mtimespec.tv_sec) ? 1 : 0;
+}
+
+bool mx_sort_by_ctime(t_file *f1, t_file *f2, int reverse) {
+    if (!reverse)
+        return (f1->st_ctimespec.tv_sec >= f2->st_ctimespec.tv_sec) ? 0 : 1;
+    return (f1->st_ctimespec.tv_sec > f2->st_ctimespec.tv_sec) ? 1 : 0;
+}
+
 bool mx_sort_errors(void *a, void *b) {
     return (mx_strcmp(a, b) > 0 ? 1 : 0);
 }

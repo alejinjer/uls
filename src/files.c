@@ -22,7 +22,7 @@ t_file *mx_create_file(char *name, char *dirname)
 	file->st_atimespec = stat.st_atimespec;
 	file->st_mtimespec = stat.st_mtimespec;
 	file->st_ctimespec = stat.st_ctimespec;
-	file->st_birthtimespec = stat.st_birthtimespec;
+	file->st_btimespec = stat.st_birthtimespec;
     return file;
 }
 
@@ -39,10 +39,10 @@ int mx_lst_size(t_file *list) {
 	int result = 0;
 
 	while (list) {
-		++result;
-		list = list->next;
-	}
-	return result;
+  		++result;
+  		list = list->next;
+ 	}
+ 	return result;
 }
 
 static char *make_full_path(char *file_name, char *dirname) {

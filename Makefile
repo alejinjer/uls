@@ -30,11 +30,14 @@ SRC	= 	main.c\
 		print_link.c\
 		print_major.c\
 		print_minor.c\
+		print_name.c\
 		lltoa.c\
 		spacing_l.c\
 		output.c\
 		multicolumn.c\
 		err_output.c\
+		ls_h.c\
+		ls_h2.c\
 
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
 OBJS	=	$(addprefix $(OBJD)/, $(SRC:%.c=%.o))
