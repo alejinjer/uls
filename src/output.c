@@ -46,17 +46,21 @@ static void ls_m(t_file *list, int flags) {
 void mx_output(t_file *list, int flags) {
     int *size;
 
-    if ((flags & LS_L) && MX_ISDIR(list->st_mode)) {
+    if (!list)
+        return;
+    if (MX_ISDIR(list->st_mode)) {
         if (!list->subdirs)
             return;
-        mx_print_total_nblocks(list);
         list = list->subdirs;
+        (flags & LS_L) ? mx_print_total_nblocks(list) : (void)0;
     }
     size = mx_get_row_size(list);
     while (list) {
-        if (flags & LS_L) {
-            print_line(list, size);
-        } else {
+        if (flags & LS_L)
+            print_line(list, size, flags);
+        else if (flags & LS_M)
+            ls_m(list, flags);
+        else {
             mx_printstr(list->name);
             mx_printstr("\n");
         }

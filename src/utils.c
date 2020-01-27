@@ -23,7 +23,7 @@ void mx_ls_error(char *s, int error)
 
 void mx_printnchar(char c, int n) {
     while (n) {
-        mx_printchar(c);
+        write(1, &c, 1);
         n--;
     }
 }

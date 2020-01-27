@@ -20,7 +20,7 @@ int mx_terminal_size(int flags) {
     else if ((flags & LS_CC) || (flags & LS_M))
         w.ws_col = 80;
     else
-        w.ws_col = 24;
+        w.ws_col = 15;
     return w.ws_col;
 }
 
@@ -43,7 +43,7 @@ static t_list_info *multicolumn(t_file *files, int flags) {
     int win_size = mx_terminal_size(flags);
     int words = total_words(files);
     
-    info->lines = win_size / ((8 - (max % 8)) + max);
+    (info->lines = win_size / ((8 - (max % 8)) + max)) ? 0 : (info->lines = 1);
     if (words % info->lines)
         info->rows = (words / info->lines) + 1;
     else
