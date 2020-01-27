@@ -1,14 +1,18 @@
 #include "uls.h"
 
-t_file *mx_create_file(char *path, char *full_path)
+static char *make_full_path(char *file_name, char *dirname);
+
+t_file *mx_create_file(char *name, char *dirname)
 {
     t_file *file = (t_file *)mx_memalloc(sizeof(t_file));
 	t_stat stat;
 
-	lstat(full_path, &stat);
-	mx_memcpy((void*)file->full_path, (void*)full_path, PATH_MAX);
-	file->name = mx_strdup(path);
+	file->name = mx_strdup(name);
+	file->full_path = make_full_path(name, dirname);
+	lstat(file->full_path, &stat);
 	file->st_mode = stat.st_mode;
+	if (MX_ISLNK(file->st_mode))
+            readlink(file->full_path, file->symlink, NAME_MAX);
 	file->st_nlink = stat.st_nlink;
 	file->st_uid = stat.st_uid;
 	file->st_gid = stat.st_gid;
@@ -39,4 +43,18 @@ int mx_lst_size(t_file *list) {
   		list = list->next;
  	}
  	return result;
+}
+
+static char *make_full_path(char *file_name, char *dirname) {
+    char *full_path = mx_strnew(mx_strlen(dirname) + mx_strlen(file_name) + 1);
+
+	if (mx_strcmp(file_name, dirname) == 0)
+		mx_strcat(full_path, dirname);
+	else {
+		full_path = mx_strcat(full_path, dirname);
+		if (mx_strcmp(dirname, "/"))
+			full_path = mx_strcat(full_path, "/");
+		full_path = mx_strcat(full_path, file_name);
+	}
+    return full_path;
 }

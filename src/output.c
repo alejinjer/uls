@@ -44,24 +44,21 @@ static void ls_m(t_file *list, int flags) {
 }
 
 void mx_output(t_file *list, int flags) {
-    int *size; 
+    int *size;
 
-    if ((flags & LS_L) && MX_ISDIR(list->st_mode))
+    if ((flags & LS_L) && MX_ISDIR(list->st_mode)) {
+        if (!list->subdirs)
+            return;
         mx_print_total_nblocks(list);
-    list = list->subdirs;
+        list = list->subdirs;
+    }
     size = mx_get_row_size(list);
     while (list) {
-        if (flags & LS_M)
-            ls_m(list, flags);
-        else if ((flags & LS_ONE)) {
-            mx_print_name(list, flags);
-            mx_printchar('\n');
-        }
-        else if (flags & LS_L)
-            print_line(list, size, flags);
-        else {
-            mx_output_multicolumn(list, flags);
-            return;
+        if (flags & LS_L) {
+            print_line(list, size);
+        } else {
+            mx_printstr(list->name);
+            mx_printstr("\n");
         }
         list = list->next;
     }
