@@ -20,7 +20,7 @@ static int parse_options(char *s, int *flags) {
     int n;
 
     while (*(++s))
-    {
+    {        
         if ((n = mx_get_char_index("ACRSUacflrtu1hmp", *s)) == -1)
             mx_ls_error(s, USAGE);
         *flags |= (1 << n);

@@ -74,17 +74,21 @@ void mx_output_multicolumn(t_file *files, int flags) {
     t_list_info *info = multicolumn(files, flags);
     int prev_strlen = 0;
 
-    info->size = total_words(files);
-    info->max_word_size = mx_list_max(files);
-    for (int i = 0; i < info->rows; i++) {
-        for (int j = 0; j < info->size; j+=info->rows) {
-            if (j != 0 && ((i + j) != mx_lst_size(files)))
-                mx_count_tabs(info->max_word_size, prev_strlen);
-            if (i + j < info->size) {
-                mx_printstr(get_nth_element(files, i + j));
-                prev_strlen = mx_strlen(get_nth_element(files, i + j));
+    if (flags & LS_M) {
+        mx_ls_m(files, flags);
+    } else {
+        info->size = total_words(files);
+        info->max_word_size = mx_list_max(files);
+        for (int i = 0; i < info->rows; i++) {
+            for (int j = 0; j < info->size; j+=info->rows) {
+                if (j != 0 && ((i + j) != mx_lst_size(files)))
+                    mx_count_tabs(info->max_word_size, prev_strlen);
+                if (i + j < info->size) {
+                    mx_printstr(get_nth_element(files, i + j));
+                    prev_strlen = mx_strlen(get_nth_element(files, i + j));
+                }
             }
+            mx_printchar('\n');
         }
-        mx_printchar('\n');
     }
 }

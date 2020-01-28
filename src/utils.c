@@ -22,10 +22,11 @@ void mx_ls_error(char *s, int error)
 }
 
 void mx_printnchar(char c, int n) {
-    while (n) {
-        mx_printchar(c);
-        n--;
-    }
+    char *str = mx_strnew(n);
+
+    for (int i = 0; i < n; i++)
+        str[i] = c;
+    mx_printstr(str);
 }
 
 int mx_intlength(int n) {

@@ -46,6 +46,7 @@ static void size_more_thous(off_t num, double g, int pow, char *size) {
 
 static void size_less_thousand(off_t st_size, char *size) {
     off_t num = st_size;
+
     if (num == 0) {
       size = mx_strcpy(size, "  0B");
     }
@@ -57,6 +58,7 @@ static void size_less_thousand(off_t st_size, char *size) {
 
 static int round_num(double g) {
     off_t res;
+    
     if (((off_t)(g * 10) % 10) >= 5)
         res = (off_t)(g * 10) /10 + 1;
     else

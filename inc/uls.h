@@ -204,4 +204,5 @@ int mx_terminal_size(int flags);
 void mx_err_output(t_list *errors);
 // convert_to_h.c
 char *mx_convert_to_h(long long size);
+void mx_ls_m(t_file *list, int flags);
 #endif

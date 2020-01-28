@@ -12,7 +12,7 @@ void mx_choose_output(t_file *list, int flags, int lst_size) {
             }
             ((flags & LS_L) || (flags & LS_ONE))
                 ? mx_output(list, flags)
-                : mx_output_multicolumn(list->subdirs);
+                : mx_output_multicolumn(list->subdirs, flags);
             if (MX_ISDIR(list->st_mode) && list->subdirs && (flags & LS_RR))
                 mx_print_dirs(list->subdirs, flags);
         }
@@ -20,7 +20,7 @@ void mx_choose_output(t_file *list, int flags, int lst_size) {
     else {
         ((flags & LS_L) || (flags & LS_ONE))
             ? mx_output(list, flags)
-            : mx_output_multicolumn(list);
+            : mx_output_multicolumn(list, flags);
         mx_print_dirs(list, flags);
     }
 }
@@ -29,7 +29,9 @@ void mx_print_dirs(t_file *list, int flags) {
     t_file *ptr = list;
 
     while (ptr) {
-        if (MX_ISDIR(ptr->st_mode) && ptr->subdirs && (flags & LS_RR) && mx_strcmp(ptr->name, ".") && mx_strcmp(ptr->name, "..")) {
+        if (MX_ISDIR(ptr->st_mode) && ptr->subdirs && (flags & LS_RR) 
+            && mx_strcmp(ptr->name, ".") && mx_strcmp(ptr->name, "..")) 
+        {
             mx_printstr("\n");
             mx_printstr(ptr->full_path);
             mx_printstr(":\n");

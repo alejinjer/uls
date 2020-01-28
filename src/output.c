@@ -22,25 +22,28 @@ static void print_line(t_file *file, int *size, int flags) {
     mx_printstr("\n");
 }
 
-static void ls_m(t_file *list, int flags) {
+void mx_ls_m(t_file *list, int flags) {
     static int counter = 0;
     int win_size = mx_terminal_size(flags);
     int i = (flags & LS_P) ? 3 : 2;
 
-    mx_print_name(list, flags);
-    list->next ? mx_printstr(", ") : (void)0;
-    counter += mx_strlen(list->name);
-    if (flags & LS_P && MX_ISDIR(list->st_mode))
-        counter += 3;
-    else 
-        counter += 2;
-    if (list->next) {
-        if (counter + mx_strlen(list->next->name) > win_size - i) {
-            mx_printchar('\n');
-            counter = 0;
+    while (list) {
+        mx_print_name(list, flags);
+        list->next ? mx_printstr(", ") : (void)0;
+        counter += mx_strlen(list->name);
+        if (flags & LS_P && MX_ISDIR(list->st_mode))
+            counter += 3;
+        else 
+            counter += 2;
+        if (list->next) {
+            if (counter + mx_strlen(list->next->name) > win_size - i) {
+                mx_printchar('\n');
+                counter = 0;
+            }
         }
-    }
-    !list->next ? mx_printchar('\n') : (void)0; 
+        !list->next ? mx_printchar('\n') : (void)0;
+        list = list->next;
+    } 
 }
 
 void mx_output(t_file *list, int flags) {
@@ -54,9 +57,9 @@ void mx_output(t_file *list, int flags) {
     }
     size = mx_get_row_size(list);
     while (list) {
-        if (flags & LS_L) {
-            print_line(list, size);
-        } else {
+        if (flags & LS_L)
+            print_line(list, size, flags);
+        else {
             mx_printstr(list->name);
             mx_printstr("\n");
         }
