@@ -54,7 +54,7 @@ void mx_output(t_file *list, int flags) {
         list = list->subdirs;
         (flags & LS_L) ? mx_print_total_nblocks(list) : (void)0;
     }
-    size = mx_get_row_size(list);
+    size = (flags & LS_L) ? mx_get_row_size(list) : NULL;
     while (list) {
         if (flags & LS_L)
             print_line(list, size, flags);

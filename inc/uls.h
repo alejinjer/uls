@@ -152,6 +152,9 @@ bool mx_sort_by_name(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_size(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_errors(void *a, void *b);
+bool mx_sort_by_atime(t_file *f1, t_file *f2, int reverse);
+bool mx_sort_by_btime(t_file *f1, t_file *f2, int reverse);
+bool mx_sort_by_ctime(t_file *f1, t_file *f2, int reverse);
 
 // print_total_nblocks.c
 void mx_print_total_nblocks(t_file *list);

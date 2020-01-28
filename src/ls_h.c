@@ -2,7 +2,6 @@
 
 static void size_less_thousand(off_t st_size, char *size);
 static void size_more_thous(off_t num, double g, int pow, char *size);
-static void size_less_thousand(off_t st_size, char *size);
 static int round_num(double g);
 static void add_pref(char *size, int pow);
 

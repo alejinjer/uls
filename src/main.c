@@ -2,45 +2,9 @@
 
 void mx_print_dirs(t_file *list, int flags);
 
-// void mx_choose_output(t_file *list, int flags, int lst_size) {
-//     if (MX_ISDIR(list->st_mode)) {
-//         for (int i = 0; list; list = list->next, ++i) {
-//             i > 0 ? mx_printchar('\n') : (void)0;
-//             if (lst_size > 1 && MX_ISDIR(list->st_mode)) {
-//                 mx_printstr(list->name);
-//                 mx_printstr(":\n");
-//             }
-//             ((flags & LS_L) || (flags & LS_ONE))
-//                 ? mx_output(list, flags)
-//                 : mx_output_multicolumn(list->subdirs, flags);
-//             if (MX_ISDIR(list->st_mode) && list->subdirs && (flags & LS_RR))
-//                 mx_print_dirs(list->subdirs, flags);
-//         }
-//     }
-//     else {
-//         ((flags & LS_L) || (flags & LS_ONE))
-//             ? mx_output(list, flags)
-//             : mx_output_multicolumn(list, flags);
-//         mx_print_dirs(list, flags);
-//     }
-// }
-
-// void mx_print_dirs(t_file *list, int flags) {
-//     t_file *ptr = list;
-
-//     while (ptr) {
-//         if (MX_ISDIR(ptr->st_mode) && ptr->subdirs && (flags & LS_RR) && mx_strcmp(ptr->name, ".") && mx_strcmp(ptr->name, "..")) {
-//             mx_printstr("\n");
-//             mx_printstr(ptr->full_path);
-//             mx_printstr(":\n");
-//             mx_choose_output(ptr->subdirs, flags, 0);
-//         }
-//         ptr = ptr->next;
-//     }
-// }
-
 void mx_print_files(t_file *list, int flags) {
-    ((flags & LS_L) || (flags & LS_ONE)) ? mx_output(list, flags)
+    ((flags & LS_L) || (flags & LS_ONE) || (flags & LS_M))
+        ? mx_output(list, flags)
         : mx_output_multicolumn(list, flags);
 }
 
@@ -50,7 +14,8 @@ void print_dirs_recur(t_file *list, int flags) {
     mx_printstr("\n");
     mx_printstr(list->full_path);
     mx_printstr(":\n");
-    ((flags & LS_L) || (flags & LS_ONE)) ? mx_output(list, flags)
+    ((flags & LS_L) || (flags & LS_ONE) || (flags & LS_M))
+        ? mx_output(list, flags)
         : mx_output_multicolumn(list->subdirs, flags);
     while (ptr) {
         (MX_ISDIR(ptr->st_mode) && mx_strcmp(ptr->name, ".")
@@ -68,7 +33,8 @@ void mx_print_dirs(t_file *list, int flags) {
             mx_printstr(ptr->name);
             mx_printstr(":\n");
         }
-        ((flags & LS_L) || (flags & LS_ONE)) ? mx_output(ptr, flags)
+        ((flags & LS_L) || (flags & LS_ONE) || (flags & LS_M))
+            ? mx_output(ptr, flags)
             : mx_output_multicolumn(ptr->subdirs, flags);
         if ((flags & LS_RR))
         {
@@ -85,23 +51,22 @@ void mx_print_dirs(t_file *list, int flags) {
     }
 }
 
-
 void mx_choose_sort(t_file **list, int flags) {
     if (flags & LS_F)
         return;
     mx_lst_sort(list, mx_sort_by_name, flags);
     if (flags & LS_SS)
         mx_lst_sort(list, mx_sort_by_size, flags);
-    // if (flags & LS_T) {
-    //     if (flags & LS_UU)
-    //         mx_lst_sort(list, mx_sort_by_btime, flags);
-    //     else if (flags & LS_C)
-    //         mx_lst_sort(list, mx_sort_by_ctime, flags);
-    //     else if (flags & LS_U)
-    //         mx_lst_sort(list, mx_sort_by_atime, flags);
-    //     else
-    //         mx_lst_sort(list, mx_sort_by_mtime, flags);
-    // }
+    if (flags & LS_T) {
+        if (flags & LS_UU)
+            mx_lst_sort(list, mx_sort_by_btime, flags);
+        else if (flags & LS_C)
+            mx_lst_sort(list, mx_sort_by_ctime, flags);
+        else if (flags & LS_U)
+            mx_lst_sort(list, mx_sort_by_atime, flags);
+        else
+            mx_lst_sort(list, mx_sort_by_mtime, flags);
+    }
 }
 
 static void sort_all(t_file **list, int flags) {
@@ -129,6 +94,7 @@ int main(int argc, char *argv[]) {
     errs ? mx_err_output(errs) : (void)0;
     files ? mx_choose_sort(&files, flags) : (void)0;
     files ? mx_print_files(files, flags) : (void)0;
+    (files && dirs) ? mx_printchar('\n') : (void)0;
     dirs ? sort_all(&dirs, flags) : (void)0;
     dirs ? mx_print_dirs(dirs, flags) : (void)0;
     // system("leaks -q uls");
