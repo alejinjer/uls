@@ -1,6 +1,5 @@
 #include "uls.h"
 
-
 static int total_words(t_file *files) {
     int total = 0;
 
@@ -87,4 +86,5 @@ void mx_output_multicolumn(t_file *files, int flags) {
         }
         mx_printchar('\n');
     }
+    free(info);
 }

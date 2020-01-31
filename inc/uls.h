@@ -93,6 +93,7 @@ struct s_file {
     char *name;
     char *full_path;
     char symlink[NAME_MAX];
+    char *error;
     mode_t st_mode;                   /* File type and mode */
     nlink_t st_nlink;                 /* Number of hard links */
     uid_t st_uid;                     /* User ID of owner */
@@ -138,8 +139,11 @@ int mx_lst_size(t_file *list);
 
 // get_file_list.c
 void mx_explore_path(char *dirname, int flags, t_file **list);
+// void mx_handle_nonexistent(char *dirname, t_list **errors,
+//                            t_file **files);
 void mx_handle_nonexistent(char *dirname, t_list **errors,
-                           t_file **files);
+                           t_file **files, t_file **dirs);
+
 t_list *mx_process_args(char *argv[], t_file **files,
                         t_file **dirs, int flags);
 
