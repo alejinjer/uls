@@ -16,7 +16,7 @@ INCS	=	$(addprefix $(INCD)/, $(INC))
 SRC	= 	main.c\
 		parse_flags.c\
 		utils.c\
-		files.c\
+		t_file.c\
 		get_file_list.c\
 		sorting_algo.c\
 		sorting_flags.c\

@@ -94,17 +94,17 @@ struct s_file {
     char *full_path;
     char symlink[NAME_MAX];
     char *error;
-    mode_t st_mode;                   /* File type and mode */
-    nlink_t st_nlink;                 /* Number of hard links */
-    uid_t st_uid;                     /* User ID of owner */
-    gid_t st_gid;                     /* Group ID of owner */
-    dev_t st_rdev;                    /* Device ID (if special file) */
-    off_t st_size;                    /* Total size, in bytes */
-    blkcnt_t st_blocks;               /* Number of 512B blocks allocated */
-    struct timespec st_atimespec;     /* time of last access */
-    struct timespec st_mtimespec;     /* time of last data modification */
-    struct timespec st_ctimespec;     /* time of last status change */
-    struct timespec st_btimespec;     /*  File creation time(birth)  */
+    mode_t st_mode;               /* File type and mode */
+    nlink_t st_nlink;             /* Number of hard links */
+    uid_t st_uid;                 /* User ID of owner */
+    gid_t st_gid;                 /* Group ID of owner */
+    dev_t st_rdev;                /* Device ID (if special file) */
+    off_t st_size;                /* Total size, in bytes */
+    blkcnt_t st_blocks;           /* Number of 512B blocks allocated */
+    struct timespec st_atimespec; /* time of last access */
+    struct timespec st_mtimespec; /* time of last data modification */
+    struct timespec st_ctimespec; /* time of last status change */
+    struct timespec st_btimespec; /*  File creation time(birth)  */
     t_file *next;
     t_file *subdirs;
 };
@@ -155,7 +155,6 @@ void mx_lst_sort(t_file **list,
 bool mx_sort_by_name(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_size(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse);
-bool mx_sort_errors(void *a, void *b);
 bool mx_sort_by_atime(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_btime(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_ctime(t_file *f1, t_file *f2, int reverse);
@@ -178,37 +177,42 @@ void mx_print_gid(t_file *file, int nspaces);
 
 // print_size.c
 void mx_print_size(t_file *file, int nspaces, int flags);
-void mx_hr_write_number(char *size, off_t st_size);
-char *mx_hr_size(off_t st_size);
-int mx_hr_get_pow(off_t st_size);
 
 // print_time.c
 void mx_print_time(time_t *t);
 
-//print_name.c
+// print_name.c
 void mx_print_name(t_file *file, int flags);
 
 // print_link.c
 void mx_print_link(t_file *file);
 
-//lltoa.c
+// lltoa.c
 char *mx_lltoa(long long int number);
 
-//spacing_l.c
+// spacing_l.c
 int *mx_get_row_size(t_file *file);
 
-//print_major.c
+// print_major.c
 void mx_print_major(t_file *file, int nspaces);
 
-//print_minor.c
+// print_minor.c
 void mx_print_minor(t_file *file, int nspaces);
 
-//multicolumn.c
+// multicolumn.c
 void mx_output_multicolumn(t_file *files, int flags);
 void mx_count_tabs(int max_len, int prev_len);
 int mx_terminal_size(int flags);
+
 // err_output.c
 void mx_err_output(t_list *errors);
-// convert_to_h.c
-char *mx_convert_to_h(long long size);
+bool mx_sort_errors(void *a, void *b);
+
+// ls_h.c
+char *mx_hr_size(off_t st_size);
+
+// ls_h2.c
+void mx_hr_write_number(char *size, off_t st_size);
+int mx_hr_get_pow(off_t st_size);
+
 #endif

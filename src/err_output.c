@@ -6,3 +6,7 @@ void mx_err_output(t_list *errors) {
         errors = errors->next;
     }
 }
+
+bool mx_sort_errors(void *a, void *b) {
+    return (mx_strcmp(a, b) > 0 ? 1 : 0);
+}

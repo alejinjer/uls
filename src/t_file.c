@@ -1,6 +1,18 @@
 #include "uls.h"
 
-static char *make_full_path(char *file_name, char *dirname);
+static char *make_full_path(char *file_name, char *dirname) {
+    char *full_path = mx_strnew(mx_strlen(dirname) + mx_strlen(file_name) + 1);
+
+	if (mx_strcmp(file_name, dirname) == 0)
+		mx_strcat(full_path, dirname);
+	else {
+		full_path = mx_strcat(full_path, dirname);
+		if (mx_strcmp(dirname, "/"))
+			full_path = mx_strcat(full_path, "/");
+		full_path = mx_strcat(full_path, file_name);
+	}
+    return full_path;
+}
 
 t_file *mx_create_file(char *name, char *dirname)
 {
@@ -43,18 +55,4 @@ int mx_lst_size(t_file *list) {
   		list = list->next;
  	}
  	return result;
-}
-
-static char *make_full_path(char *file_name, char *dirname) {
-    char *full_path = mx_strnew(mx_strlen(dirname) + mx_strlen(file_name) + 1);
-
-	if (mx_strcmp(file_name, dirname) == 0)
-		mx_strcat(full_path, dirname);
-	else {
-		full_path = mx_strcat(full_path, dirname);
-		if (mx_strcmp(dirname, "/"))
-			full_path = mx_strcat(full_path, "/");
-		full_path = mx_strcat(full_path, file_name);
-	}
-    return full_path;
 }

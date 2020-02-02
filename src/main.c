@@ -23,15 +23,17 @@ void mx_print_files(t_file *list, int flags) {
 void print_dirs_recur(t_file *list, int flags) {
     t_file *ptr = list->subdirs;
 
-    mx_printstr("\n");
-    mx_printstr(list->full_path);
-    mx_printstr(":\n");
-    mx_print_files(list, flags);
-    while (ptr) {
-        (MX_ISDIR(ptr->st_mode) && mx_strcmp(ptr->name, ".")
-            && mx_strcmp(ptr->name, ".."))
-            ? print_dirs_recur(ptr, flags) : (void)0;
-        ptr = ptr->next;
+    if (mx_strcmp(list->name, ".") && mx_strcmp(list->name, "..")) {
+        mx_printstr("\n");
+        mx_printstr(list->full_path);
+        mx_printstr(":\n");
+        mx_print_files(list, flags);
+        while (ptr) {
+            (MX_ISDIR(ptr->st_mode) && mx_strcmp(ptr->name, ".")
+                && mx_strcmp(ptr->name, ".."))
+                ? print_dirs_recur(ptr, flags) : (void)0;
+            ptr = ptr->next;
+        }
     }
 }
 
@@ -62,10 +64,9 @@ void mx_print_dirs(t_file *list, int flags) {
 void mx_choose_sort(t_file **list, int flags) {
     if (flags & LS_F)
         return;
-    mx_lst_sort(list, mx_sort_by_name, flags);
-    if (flags & LS_SS)
+    else if (flags & LS_SS)
         mx_lst_sort(list, mx_sort_by_size, flags);
-    if (flags & LS_T) {
+    else if (flags & LS_T) {
         if (flags & LS_UU)
             mx_lst_sort(list, mx_sort_by_btime, flags);
         else if (flags & LS_C)
@@ -75,6 +76,8 @@ void mx_choose_sort(t_file **list, int flags) {
         else
             mx_lst_sort(list, mx_sort_by_mtime, flags);
     }
+    else
+        mx_lst_sort(list, mx_sort_by_name, flags);
 }
 
 static void sort_dirs(t_file **list, int flags) {
@@ -96,7 +99,7 @@ static void print_all(t_list *errs, t_file *files, t_file *dirs, int flags) {
     files ? mx_print_files(files, flags) : (void)0;
     (files && dirs) ? mx_printchar('\n') : (void)0;
     if (dirs) {
-        (files && !dirs->next)
+        ((errs || files) && !dirs->next)
             ? mx_printstr(dirs->name), mx_printstr(":\n") : (void)0;
     }
     dirs ? mx_print_dirs(dirs, flags) : (void)0;

@@ -1,22 +1,6 @@
 #include "uls.h"
 
-static int parse_options(char *s, int *flags);
-
-int mx_parse_flags(int argc, char **argv, int *flags) {
-    int i = 0;
-
-    *flags = 0;
-    while (++i < argc && argv[i][0] == '-' && argv[i][1])
-    {
-        if (argv[i][1] == '-' && argv[i][2])
-			return (i + 1);
-        if (!parse_options(argv[i], flags))
-            return (-1);
-    }
-    return (i);
-}
-
-static int parse_options(char *s, int *flags) {
+static void parse_arg(char *s, int *flags) {
     int n;
 
     while (*(++s))
@@ -35,7 +19,19 @@ static int parse_options(char *s, int *flags) {
             *flags &= (*s == 'u') ? ~(LS_UU + LS_C) : ~LS_U;
         }
     }
+}
+
+int mx_parse_flags(int argc, char **argv, int *flags) {
+    int i = 0;
+
+    *flags = 0;
+    while (++i < argc && argv[i][0] == '-' && argv[i][1])
+    {
+        if (argv[i][1] == '-' && argv[i][2])
+			return (i + 1);
+        parse_arg(argv[i], flags);
+    }
     (*flags & LS_F) ? *flags &= ~(LS_T + LS_SS) : 0;
     (*flags & LS_SS) ? *flags &= ~LS_T : 0;
-    return (1);
+    return (i);
 }
