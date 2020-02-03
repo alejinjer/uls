@@ -1,16 +1,5 @@
 #include "uls.h"
 
-static int total_words(t_file *files) {
-    int total = 0;
-
-    while (files) {
-        if (files->name)
-            total++;
-        files = files->next;
-    }
-    return total;
-}
-
 int mx_terminal_size(int flags) {
     struct winsize w;
 
@@ -19,7 +8,7 @@ int mx_terminal_size(int flags) {
     else if ((flags & LS_CC) || (flags & LS_M))
         w.ws_col = 80;
     else
-        w.ws_col = 15;
+        w.ws_col = 1;
     return w.ws_col;
 }
 
@@ -40,8 +29,8 @@ static t_list_info *multicolumn(t_file *files, int flags) {
     t_list_info *info = mx_memalloc(sizeof(t_list_info));
     int max = mx_list_max(files);
     int win_size = mx_terminal_size(flags);
-    int words = total_words(files);
-    
+    int words = mx_lst_size(files);
+
     (info->lines = win_size / ((8 - (max % 8)) + max)) ? 0 : (info->lines = 1);
     if (words % info->lines)
         info->rows = (words / info->lines) + 1;
@@ -73,10 +62,10 @@ void mx_output_multicolumn(t_file *files, int flags) {
     t_list_info *info = multicolumn(files, flags);
     int prev_strlen = 0;
 
-    info->size = total_words(files);
+    info->size = mx_lst_size(files);
     info->max_word_size = mx_list_max(files);
     for (int i = 0; i < info->rows; i++) {
-        for (int j = 0; j < info->size; j+=info->rows) {
+        for (int j = 0; j < info->size; j += info->rows) {
             if (j != 0 && ((i + j) != mx_lst_size(files)))
                 mx_count_tabs(info->max_word_size, prev_strlen);
             if (i + j < info->size) {

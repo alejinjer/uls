@@ -50,6 +50,8 @@ typedef enum e_error {
 #define LS_H 8192
 #define LS_M 16384
 #define LS_P 32768
+#define LS_G 65536
+#define LS_O 131072
 
 #define MX_MAX(a, b) b &((a - b) >> 31) | a &(~(a - b) >> 31)
 
@@ -139,8 +141,6 @@ int mx_lst_size(t_file *list);
 
 // get_file_list.c
 void mx_explore_path(char *dirname, int flags, t_file **list);
-// void mx_handle_nonexistent(char *dirname, t_list **errors,
-//                            t_file **files);
 void mx_handle_nonexistent(char *dirname, t_list **errors,
                            t_file **files, t_file **dirs);
 
@@ -167,7 +167,7 @@ void mx_output(t_file *list, int flags);
 void mx_print_chmod(t_file *file, int nspaces);
 
 // print_nlinks.c
-void mx_print_nlinks(t_file *file, int nspaces);
+void mx_print_nlinks(t_file *file, int nspaces, int flags);
 
 // print_uid.c
 void mx_print_uid(t_file *file, int nspaces);

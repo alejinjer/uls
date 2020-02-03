@@ -7,9 +7,9 @@ static void print_line(t_file *file, int *size, int flags) {
     (flags & LS_C) ? t = &(file->st_ctimespec.tv_sec) : 0;
     (flags & LS_U) ? t = &(file->st_atimespec.tv_sec) : 0;
     mx_print_chmod(file, 1);
-    mx_print_nlinks(file, size[0]);
-    mx_print_uid(file, size[1]);
-    mx_print_gid(file, size[2]);
+    mx_print_nlinks(file, size[0], flags);
+    !(flags & LS_G) ? mx_print_uid(file, size[1]) : (void)0;
+    !(flags & LS_O) ? mx_print_gid(file, size[2]) : (void)0;
     if (MX_ISCHR(file->st_mode) || MX_ISBLK(file->st_mode)) {
         mx_print_major(file, 3);
         mx_print_minor(file, 3);
@@ -30,17 +30,20 @@ static void ls_m(t_file *list, int flags) {
     mx_print_name(list, flags);
     list->next ? mx_printstr(", ") : (void)0;
     counter += mx_strlen(list->name);
-    if (flags & LS_P && MX_ISDIR(list->st_mode))
+    if ((flags & LS_P) && MX_ISDIR(list->st_mode))
         counter += 3;
     else 
         counter += 2;
     if (list->next) {
-        if (counter + mx_strlen(list->next->name) > win_size - i) {
+        if (counter + mx_strlen(list->next->name) > win_size - i - 1) {
             mx_printchar('\n');
             counter = 0;
         }
     }
-    !list->next ? mx_printchar('\n') : (void)0; 
+    else {
+        mx_printchar('\n');
+        counter = 0;
+    }
 }
 
 void mx_output(t_file *list, int flags) {

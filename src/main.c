@@ -87,9 +87,8 @@ static void sort_dirs(t_file **list, int flags) {
     ptr = *list;
     while (ptr) {
         mx_choose_sort(&ptr->subdirs, flags);
-        if ((flags & LS_RR) && ptr->subdirs) {
+        if ((flags & LS_RR) && ptr->subdirs)
             sort_dirs(&ptr->subdirs, flags);
-        }
         ptr = ptr->next;
     }
 }
