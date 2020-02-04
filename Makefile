@@ -20,6 +20,7 @@ SRC	= 	main.c\
 		get_file_list.c\
 		sorting_algo.c\
 		sorting_flags.c\
+		sorting_flags2.c\
 		print_total_nblocks.c\
 		print_chmod.c\
 		print_nlinks.c\

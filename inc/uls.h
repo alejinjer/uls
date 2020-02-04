@@ -20,20 +20,6 @@ typedef enum e_error {
     MALL_ERR
 } t_error;
 
-/*
-** -A (LS_AA) to display hidden files;
-** -R (LS_RR) recursively list subfolders encountered;
-** -S (LS_SS) sort by size;
-** -U (LS_UU) sort by creation date;
-** -a (LS_A) to display hidden files, current folder and previous folder;
-** -l (LS_L) to get more details, -d to display current folder only;
-** -r (LS_R) reverse the order of the sort to get reverse ASCII order or the
-** oldest entries first (or largest files last, if combined with sort by size;
-** -t (LS_T) sort by time modified;
-** -u (LS_U) sort by last time of access;
-** -1 (LS_ONE) to display results on one column;
-*/
-
 #define LS_AA 1
 #define LS_CC 2
 #define LS_RR 4
@@ -41,17 +27,16 @@ typedef enum e_error {
 #define LS_UU 16
 #define LS_A 32
 #define LS_C 64
-#define LS_F 128
-#define LS_L 256
-#define LS_R 512
-#define LS_T 1024
-#define LS_U 2048
-#define LS_ONE 4096
-#define LS_H 8192
-#define LS_M 16384
-#define LS_P 32768
-#define LS_G 65536
-#define LS_O 131072
+#define LS_G 128
+#define LS_H 256
+#define LS_L 512
+#define LS_M 1024
+#define LS_O 2048
+#define LS_P 4096
+#define LS_R 8192
+#define LS_T 16384
+#define LS_U 32768
+#define LS_ONE 65536
 
 #define MX_MAX(a, b) b &((a - b) >> 31) | a &(~(a - b) >> 31)
 

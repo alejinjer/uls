@@ -55,7 +55,7 @@ void mx_handle_nonexistent(char *dirname, t_list **errors,
 
     if (lstat(dirname, &stat) == -1)
         mx_push_front(errors, make_error_message(dirname));
-    else if (stat.st_mode) {
+    else if (!MX_ISDIR(stat.st_mode)) {
         file = mx_create_file(dirname, dirname);
         mx_lst_add_file(files, file);
     }

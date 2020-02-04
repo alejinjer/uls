@@ -20,7 +20,7 @@ void mx_print_files(t_file *list, int flags) {
         : mx_output_multicolumn(list, flags);
 }
 
-void print_dirs_recur(t_file *list, int flags) {
+static void print_dirs_recur(t_file *list, int flags) {
     t_file *ptr = list->subdirs;
 
     if (mx_strcmp(list->name, ".") && mx_strcmp(list->name, "..")) {
@@ -62,9 +62,7 @@ void mx_print_dirs(t_file *list, int flags) {
 }
 
 void mx_choose_sort(t_file **list, int flags) {
-    if (flags & LS_F)
-        return;
-    else if (flags & LS_SS)
+    if (flags & LS_SS)
         mx_lst_sort(list, mx_sort_by_size, flags);
     else if (flags & LS_T) {
         if (flags & LS_UU)
@@ -116,5 +114,5 @@ int main(int argc, char *argv[]) {
     dirs ? sort_dirs(&dirs, flags) : (void)0;
     print_all(errs, files, dirs, flags);
     // system("leaks -q uls");
-    return 0;
+    return errs ? 1 : 0;
 }
