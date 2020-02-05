@@ -10,7 +10,8 @@ void mx_print_time(time_t *t) {
         result = mx_strncpy(result, temp_time + 4, 6);
         mx_strcpy(result + 6, "  ");
         mx_strncpy(result + 8, temp_time + 20, 4);
-    } else
+    }
+    else
         result = mx_strncpy(result, temp_time + 4, 12);
     mx_printstr(result);
     mx_printchar(' ');

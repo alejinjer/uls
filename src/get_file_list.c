@@ -1,8 +1,8 @@
 #include "uls.h"
 
 static char *make_error_message(char *dirname) {
-    char *error_message = mx_strnew(mx_strlen(dirname)
-                                    + mx_strlen(strerror(errno)) + 8);
+    char *error_message = mx_strnew(
+        mx_strlen(dirname) + mx_strlen(strerror(errno)) + 8);
 
     mx_strcat(error_message, "uls: ");
     mx_strcat(error_message, dirname);
@@ -12,18 +12,18 @@ static char *make_error_message(char *dirname) {
     return error_message;
 }
 
-static void open_error(t_file **list, char *dirname) {
+static void open_error(t_file **list, char *dirname, int *flags) {
     char *filename = mx_memrchr(dirname, '/', mx_strlen(dirname));
     char *error_message = make_error_message(filename + 1);
     t_file *err = mx_create_file("", "");
 
     err->error = error_message;
     mx_lst_add_file(list, err);
+    *flags |= ERROR;
 }
 
 t_list *mx_process_args(char *argv[], t_file **files,
-                        t_file **dirs, int flags)
-{
+                        t_file **dirs, int *flags) {
     DIR *d = NULL;
     t_list *errors = NULL;
     t_file *dir_ptr = NULL;
@@ -48,8 +48,7 @@ t_list *mx_process_args(char *argv[], t_file **files,
 }
 
 void mx_handle_nonexistent(char *dirname, t_list **errors,
-                           t_file **files, t_file **dirs)
-{
+                           t_file **files, t_file **dirs) {
     t_stat stat;
     t_file *file = NULL;
 
@@ -58,31 +57,29 @@ void mx_handle_nonexistent(char *dirname, t_list **errors,
     else if (!MX_ISDIR(stat.st_mode)) {
         file = mx_create_file(dirname, dirname);
         mx_lst_add_file(files, file);
-    }
-    else {
+    } else {
         file = mx_create_file(dirname, dirname);
         file->error = make_error_message(dirname);
         mx_lst_add_file(dirs, file);
     }
 }
 
-void mx_explore_path(char *dirname, int flags, t_file **list) {
+void mx_explore_path(char *dirname, int *flags, t_file **list) {
     DIR *d = opendir(dirname);
     t_dirent *entry = NULL;
 
-    !d ? open_error(list, dirname) : (void)0;
+    !d ? open_error(list, dirname, flags) : (void)0;
     while (d && (entry = readdir(d))) {
-        if (entry->d_name[0] == '.' && !(flags & LS_AA) && !(flags & LS_A))
+        if (entry->d_name[0] == '.' && !(*flags & LS_AA) && !(*flags & LS_A))
             continue;
         else if ((!mx_strcmp(entry->d_name, ".")
-            || !mx_strcmp(entry->d_name, "..")) && !(flags & LS_A))
-        {
+            || !mx_strcmp(entry->d_name, "..")) && !(*flags & LS_A)) {
             continue;
         }
         t_file *file = mx_create_file(entry->d_name, dirname);
 
         mx_lst_add_file(list, file);
-        (MX_ISDIR(file->st_mode) && (flags & LS_RR)
+        (MX_ISDIR(file->st_mode) && (*flags & LS_RR)
             && (mx_strcmp(file->name, "..") && mx_strcmp(file->name, ".")))
             ? mx_explore_path(file->full_path, flags, &file->subdirs)
             : (void)0;

@@ -25,25 +25,24 @@ static void print_line(t_file *file, int *size, int flags) {
 static void ls_m(t_file *list, int flags) {
     static int counter = 0;
     int win_size = mx_terminal_size(flags);
-    int i = (flags & LS_P) ? 3 : 2;
 
     mx_print_name(list, flags);
-    list->next ? mx_printstr(", ") : (void)0;
-    counter += mx_strlen(list->name);
-    if ((flags & LS_P) && MX_ISDIR(list->st_mode))
-        counter += 3;
-    else 
-        counter += 2;
+    counter = (list->next ? (counter + mx_strlen(list->name) + 2) : 0);
     if (list->next) {
-        if (counter + mx_strlen(list->next->name) > win_size - i - 1) {
+        mx_printstr(", ");
+        if (!list->next->next) {
+            if (counter + mx_strlen(list->next->name) >= win_size) {
+                mx_printchar('\n');
+                counter = 0;
+            }
+        }
+        else if (counter + mx_strlen(list->next->name) + 2 >= win_size) {
             mx_printchar('\n');
             counter = 0;
         }
     }
-    else {
+    else
         mx_printchar('\n');
-        counter = 0;
-    }
 }
 
 void mx_output(t_file *list, int flags) {

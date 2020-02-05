@@ -66,7 +66,7 @@ void mx_output_multicolumn(t_file *files, int flags) {
     info->max_word_size = mx_list_max(files);
     for (int i = 0; i < info->rows; i++) {
         for (int j = 0; j < info->size; j += info->rows) {
-            if (j != 0 && ((i + j) != mx_lst_size(files)))
+            if (j != 0 && ((i + j) < mx_lst_size(files)))
                 mx_count_tabs(info->max_word_size, prev_strlen);
             if (i + j < info->size) {
                 mx_printstr(get_nth_element(files, i + j));

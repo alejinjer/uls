@@ -1,6 +1,6 @@
 NAME	=	libmx.a
 
-CFLG	=	-std=c11 $(addprefix -W, all extra error pedantic) -g
+CFLG	=	-std=c11 $(addprefix -W, all extra error pedantic)
 
 SRCD	=	src
 INCD	=	inc

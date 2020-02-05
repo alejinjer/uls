@@ -8,9 +8,6 @@ void mx_ls_error(char *s, int error) {
     }
     else if (error == ERRNO || error == MALL_ERR) {
         mx_printerr("uls: ");
-
-    }
-    if (error == ERRNO) {
         mx_printerr(s);
         mx_printerr(": ");
         mx_printerr(strerror(errno));

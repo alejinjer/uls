@@ -13,32 +13,34 @@ LMXI:=	$(LMXD)/inc
 INC		=	uls.h
 INCS	=	$(addprefix $(INCD)/, $(INC))
 
-SRC	= 	main.c\
-		parse_flags.c\
-		utils.c\
-		t_file.c\
+SRC	=	err_output.c\
 		get_file_list.c\
-		sorting_algo.c\
-		sorting_flags.c\
-		sorting_flags2.c\
-		print_total_nblocks.c\
+		lltoa.c\
+		ls_h.c\
+		ls_h2.c\
+		main.c\
+		multicolumn.c\
+		parse_flags.c\
+		print_all.c\
 		print_chmod.c\
-		print_nlinks.c\
-		print_uid.c\
 		print_gid.c\
-		print_size.c\
-		print_time.c\
 		print_link.c\
 		print_major.c\
 		print_minor.c\
 		print_name.c\
-		lltoa.c\
+		print_nlinks.c\
+		print_size.c\
+		print_time.c\
+		print_total_nblocks.c\
+		print_uid.c\
+		single_column.c\
+		sort_all.c\
+		sorting_algo.c\
+		sorting_flags.c\
+		sorting_flags2.c\
 		spacing_l.c\
-		output.c\
-		multicolumn.c\
-		err_output.c\
-		ls_h.c\
-		ls_h2.c\
+		t_file.c\
+		utils.c\
 
 SRCS	=	$(addprefix $(SRCD)/, $(SRC))
 OBJS	=	$(addprefix $(OBJD)/, $(SRC:%.c=%.o))

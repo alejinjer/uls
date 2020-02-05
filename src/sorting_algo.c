@@ -46,7 +46,8 @@ void mx_lst_sort(t_file **list,
     while (stack_pos > 1) {
         stack[stack_pos - 2].item = intersect(
             stack[stack_pos - 2].item, stack[stack_pos - 1].item, cmp, flags);
-        ++(stack[stack_pos - 2].level) && --stack_pos;
+        ++(stack[stack_pos - 2].level);
+        --stack_pos;
     }
     stack_pos > 0 ? *list = stack[0].item : 0;
 }

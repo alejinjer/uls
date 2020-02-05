@@ -37,6 +37,7 @@ typedef enum e_error {
 #define LS_T 16384
 #define LS_U 32768
 #define LS_ONE 65536
+#define ERROR 131072
 
 #define MX_MAX(a, b) b &((a - b) >> 31) | a &(~(a - b) >> 31)
 
@@ -109,28 +110,76 @@ struct s_list_info {
     int words;
 };
 
+// err_output.c
+void mx_err_output(t_list *errors);
+bool mx_sort_errors(void *a, void *b);
+
+// get_file_list.c
+void mx_explore_path(char *dirname, int *flags, t_file **list);
+void mx_handle_nonexistent(char *dirname, t_list **errors,
+                           t_file **files, t_file **dirs);
+t_list *mx_process_args(char *argv[], t_file **files,
+                        t_file **dirs, int *flags);
+
+// lltoa.c
+char *mx_lltoa(long long int number);
+
+// ls_h.c
+char *mx_hr_size(off_t st_size);
+
+// ls_h2.c
+void mx_hr_write_number(char *size, off_t st_size);
+int mx_hr_get_pow(off_t st_size);
+
+// multicolumn.c
+void mx_output_multicolumn(t_file *files, int flags);
+void mx_count_tabs(int max_len, int prev_len);
+int mx_terminal_size(int flags);
+
 // parse_flags.c
 int mx_parse_flags(int argc, char **argv, int *flags);
 
-// utils.c
-void mx_ls_error(char *s, int error);
-void mx_printnchar(char c, int n);
-int mx_intlength(int n);
-int mx_longlong_length(long long int n);
-int mx_list_max(t_file *files);
+// print_all.c
+void mx_print_all(t_list *errs, t_file *files, t_file *dirs, int flags);
 
-// files.c
-t_file *mx_create_file(char *name, char *dirname);
-void mx_lst_add_file(t_file **list, t_file *file);
-int mx_lst_size(t_file *list);
+// print_chmod.c
+void mx_print_chmod(t_file *file, int nspaces);
 
-// get_file_list.c
-void mx_explore_path(char *dirname, int flags, t_file **list);
-void mx_handle_nonexistent(char *dirname, t_list **errors,
-                           t_file **files, t_file **dirs);
+// print_gid.c
+void mx_print_gid(t_file *file, int nspaces);
 
-t_list *mx_process_args(char *argv[], t_file **files,
-                        t_file **dirs, int flags);
+// print_link.c
+void mx_print_link(t_file *file);
+
+// print_major.c
+void mx_print_major(t_file *file, int nspaces);
+
+// print_minor.c
+void mx_print_minor(t_file *file, int nspaces);
+
+// print_name.c
+void mx_print_name(t_file *file, int flags);
+
+// print_nlinks.c
+void mx_print_nlinks(t_file *file, int nspaces, int flags);
+
+// print_size.c
+void mx_print_size(t_file *file, int nspaces, int flags);
+
+// print_time.c
+void mx_print_time(time_t *t);
+
+// print_total_nblocks.c
+void mx_print_total_nblocks(t_file *list);
+
+// print_uid.c
+void mx_print_uid(t_file *file, int nspaces);
+
+// single_column.c
+void mx_output(t_file *list, int flags);
+
+// sort_all.c
+void mx_sort_all(t_list **errs, t_file **files, t_file **dirs, int flags);
 
 // sorting_algo.c
 void mx_lst_sort(t_file **list,
@@ -139,65 +188,26 @@ void mx_lst_sort(t_file **list,
 // sorting_flags.c
 bool mx_sort_by_name(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_size(t_file *f1, t_file *f2, int reverse);
+
+// sorting_flags2.c
 bool mx_sort_by_mtime(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_atime(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_btime(t_file *f1, t_file *f2, int reverse);
 bool mx_sort_by_ctime(t_file *f1, t_file *f2, int reverse);
 
-// print_total_nblocks.c
-void mx_print_total_nblocks(t_file *list);
-
-// print_chmod.c
-void mx_output(t_file *list, int flags);
-void mx_print_chmod(t_file *file, int nspaces);
-
-// print_nlinks.c
-void mx_print_nlinks(t_file *file, int nspaces, int flags);
-
-// print_uid.c
-void mx_print_uid(t_file *file, int nspaces);
-
-// print_gid.c
-void mx_print_gid(t_file *file, int nspaces);
-
-// print_size.c
-void mx_print_size(t_file *file, int nspaces, int flags);
-
-// print_time.c
-void mx_print_time(time_t *t);
-
-// print_name.c
-void mx_print_name(t_file *file, int flags);
-
-// print_link.c
-void mx_print_link(t_file *file);
-
-// lltoa.c
-char *mx_lltoa(long long int number);
-
 // spacing_l.c
 int *mx_get_row_size(t_file *file);
 
-// print_major.c
-void mx_print_major(t_file *file, int nspaces);
+// t_file.c
+t_file *mx_create_file(char *name, char *dirname);
+void mx_lst_add_file(t_file **list, t_file *file);
+int mx_lst_size(t_file *list);
 
-// print_minor.c
-void mx_print_minor(t_file *file, int nspaces);
-
-// multicolumn.c
-void mx_output_multicolumn(t_file *files, int flags);
-void mx_count_tabs(int max_len, int prev_len);
-int mx_terminal_size(int flags);
-
-// err_output.c
-void mx_err_output(t_list *errors);
-bool mx_sort_errors(void *a, void *b);
-
-// ls_h.c
-char *mx_hr_size(off_t st_size);
-
-// ls_h2.c
-void mx_hr_write_number(char *size, off_t st_size);
-int mx_hr_get_pow(off_t st_size);
+// utils.c
+void mx_ls_error(char *s, int error);
+void mx_printnchar(char c, int n);
+int mx_intlength(int n);
+int mx_longlong_length(long long int n);
+int mx_list_max(t_file *files);
 
 #endif
