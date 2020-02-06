@@ -32,12 +32,11 @@ typedef enum e_error {
 #define LS_L 512
 #define LS_M 1024
 #define LS_O 2048
-#define LS_P 4096
-#define LS_R 8192
-#define LS_T 16384
-#define LS_U 32768
-#define LS_ONE 65536
-#define ERROR 131072
+#define LS_R 4096
+#define LS_T 8192
+#define LS_U 16384
+#define LS_ONE 32768
+#define ERROR 65536
 
 #define MX_MAX(a, b) b &((a - b) >> 31) | a &(~(a - b) >> 31)
 
@@ -156,9 +155,6 @@ void mx_print_major(t_file *file, int nspaces);
 
 // print_minor.c
 void mx_print_minor(t_file *file, int nspaces);
-
-// print_name.c
-void mx_print_name(t_file *file, int flags);
 
 // print_nlinks.c
 void mx_print_nlinks(t_file *file, int nspaces, int flags);

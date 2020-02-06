@@ -4,7 +4,7 @@ static void parse_arg(char *s, int *flags) {
     int n;
 
     while (*(++s)) {
-        if ((n = mx_get_char_index("ACRSUacghlmoprtu1", *s)) == -1)
+        if ((n = mx_get_char_index("ACRSUacghlmortu1", *s)) == -1)
             mx_ls_error(s, USAGE);
         *flags |= (1 << n);
         if ((*s == 'l') || (*s == '1') || (*s == 'C') || (*s == 'm')

@@ -17,7 +17,7 @@ static void print_line(t_file *file, int *size, int flags) {
     else
         mx_print_size(file, size[3], flags);
     mx_print_time(t);
-    mx_print_name(file, flags);
+    mx_printstr(file->name);
     MX_ISLNK(file->st_mode) ? mx_print_link(file) : (void)0;
     mx_printstr("\n");
 }
@@ -26,7 +26,7 @@ static void ls_m(t_file *list, int flags) {
     static int counter = 0;
     int win_size = mx_terminal_size(flags);
 
-    mx_print_name(list, flags);
+    mx_printstr(list->name);
     counter = (list->next ? (counter + mx_strlen(list->name) + 2) : 0);
     if (list->next) {
         mx_printstr(", ");

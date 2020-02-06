@@ -1,6 +1,6 @@
 NAME	=	uls
 
-CFLG	=	-std=c11 $(addprefix -W, all extra error pedantic) -g
+CFLG	=	-std=c11 $(addprefix -W, all extra error pedantic)
 
 SRCD	=	src
 INCD	=	inc
@@ -27,7 +27,6 @@ SRC	=	err_output.c\
 		print_link.c\
 		print_major.c\
 		print_minor.c\
-		print_name.c\
 		print_nlinks.c\
 		print_size.c\
 		print_time.c\
