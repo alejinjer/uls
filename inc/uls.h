@@ -40,30 +40,13 @@ typedef enum e_error {
 
 #define MX_MAX(a, b) b &((a - b) >> 31) | a &(~(a - b) >> 31)
 
-#define MX_ISBLK(m) (((m)&S_IFMT) == S_IFBLK)   /* block special */
-#define MX_ISCHR(m) (((m)&S_IFMT) == S_IFCHR)   /* char special */
-#define MX_ISDIR(m) (((m)&S_IFMT) == S_IFDIR)   /* directory */
-#define MX_ISFIFO(m) (((m)&S_IFMT) == S_IFIFO)  /* fifo or socket */
-#define MX_ISREG(m) (((m)&S_IFMT) == S_IFREG)   /* regular file */
-#define MX_ISLNK(m) (((m)&S_IFMT) == S_IFLNK)   /* symbolic link */
-#define MX_ISSOCK(m) (((m)&S_IFMT) == S_IFSOCK) /* socket */
-
-/* Read, write, execute/search by user */
-#define MX_IRUSR 0000400 /* [XSI] R for owner */
-#define MX_IWUSR 0000200 /* [XSI] W for owner */
-#define MX_IXUSR 0000100 /* [XSI] X for owner */
-/* Read, write, execute/search by group */
-#define MX_IRGRP 0000040 /* [XSI] R for group */
-#define MX_IWGRP 0000020 /* [XSI] W for group */
-#define MX_IXGRP 0000010 /* [XSI] X for group */
-/* Read, write, execute/search by others */
-#define MX_IROTH 0000004 /* [XSI] R for other */
-#define MX_IWOTH 0000002 /* [XSI] W for other */
-#define MX_IXOTH 0000001 /* [XSI] X for other */
-
-#define MX_ISUID 0004000 /* [XSI] set user id on execution */
-#define MX_ISGID 0002000 /* [XSI] set group id on execution */
-#define MX_ISVTX 0001000 /* [XSI] directory restrcted delete */
+#define MX_ISBLK(m) (((m) & S_IFMT) == S_IFBLK)   /* block special */
+#define MX_ISCHR(m) (((m) & S_IFMT) == S_IFCHR)   /* char special */
+#define MX_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)   /* directory */
+#define MX_ISFIFO(m) (((m) & S_IFMT) == S_IFIFO)  /* fifo or socket */
+#define MX_ISREG(m) (((m) & S_IFMT) == S_IFREG)   /* regular file */
+#define MX_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)   /* symbolic link */
+#define MX_ISSOCK(m) (((m) & S_IFMT) == S_IFSOCK) /* socket */
 
 #define MX_MAJOR(x) ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
 #define MX_MINOR(x) ((int32_t)((x)&0xffffff))

@@ -35,20 +35,20 @@ void mx_print_chmod(t_file *file, int nspaces) {
     char chmod[12];
 
     chmod[0] = get_file_type(file);
-    chmod[1] = (MX_IRUSR & file->st_mode) ? 'r' : '-';
-    chmod[2] = (MX_IWUSR & file->st_mode) ? 'w' : '-';
-    chmod[3] = (MX_IXUSR & file->st_mode) ? 'x' : '-';
-    chmod[4] = (MX_IRGRP & file->st_mode) ? 'r' : '-';
-    chmod[5] = (MX_IWGRP & file->st_mode) ? 'w' : '-';
-    chmod[6] = (MX_IXGRP & file->st_mode) ? 'x' : '-';
-    chmod[7] = (MX_IROTH & file->st_mode) ? 'r' : '-';
-    chmod[8] = (MX_IWOTH & file->st_mode) ? 'w' : '-';
-    chmod[9] = (MX_IXOTH & file->st_mode) ? 'x' : '-';
+    chmod[1] = (S_IRUSR & file->st_mode) ? 'r' : '-';
+    chmod[2] = (S_IWUSR & file->st_mode) ? 'w' : '-';
+    chmod[3] = (S_IXUSR & file->st_mode) ? 'x' : '-';
+    chmod[4] = (S_IRGRP & file->st_mode) ? 'r' : '-';
+    chmod[5] = (S_IWGRP & file->st_mode) ? 'w' : '-';
+    chmod[6] = (S_IXGRP & file->st_mode) ? 'x' : '-';
+    chmod[7] = (S_IROTH & file->st_mode) ? 'r' : '-';
+    chmod[8] = (S_IWOTH & file->st_mode) ? 'w' : '-';
+    chmod[9] = (S_IXOTH & file->st_mode) ? 'x' : '-';
     chmod[10] = get_file_acl(file);
     chmod[11] = '\0';
-    MX_ISUID & file->st_mode ? (chmod[3] = chmod[3] == '-' ? 'S' : 's') : 0;
-    MX_ISGID & file->st_mode ? (chmod[6] = chmod[6] == '-' ? 'S' : 's') : 0;
-    MX_ISVTX & file->st_mode ? (chmod[9] = chmod[9] == '-' ? 'T' : 't') : 0;
+    S_ISUID & file->st_mode ? (chmod[3] = chmod[3] == '-' ? 'S' : 's') : 0;
+    S_ISGID & file->st_mode ? (chmod[6] = chmod[6] == '-' ? 'S' : 's') : 0;
+    S_ISVTX & file->st_mode ? (chmod[9] = chmod[9] == '-' ? 'T' : 't') : 0;
     mx_printstr(chmod);
     mx_printnchar(' ', nspaces);
 }

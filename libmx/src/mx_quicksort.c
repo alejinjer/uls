@@ -32,7 +32,8 @@ int mx_quicksort(char **arr, int left, int right) {
         return -1;
     if (left < right) {
         int p = partition(arr, left, right, &swap_count);
-        return (swap_count + mx_quicksort(arr, left, p) + mx_quicksort(arr, p + 1, right));
+        return (swap_count + mx_quicksort(arr, left, p)
+                + mx_quicksort(arr, p + 1, right));
     }
     return 0;
 }
